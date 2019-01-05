@@ -1,105 +1,197 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Current Camera</h2>
-        <code v-if="device">{{ device.label }}</code>
-        <div class="border">
-          <web-cam ref="webcam"
-                width="100%"
-                :deviceId="deviceId"
-                @started="onStarted" 
-                @stopped="onStopped" 
-                @error="onError"
-                @cameras="onCameras"
-                @camera-change="onCameraChange" />
-        </div>
+  <v-app>
+    <v-content>
+      <v-container
+        grid-list-md
+        text-xs-center
+      >
+        <v-layout
+          row
+          wrap
+        >
+          <v-flex xs12>
+            <v-card
+              dark
+              color="primary"
+            >
+              <v-card-title>
+                <v-icon
+                  large
+                  left
+                >
+                  camera
+                </v-icon>
+                <span
+                  class="title font-weight-light"
+                  v-if="device"
+                >
+                  {{ device.label }}
+                </span>
+              </v-card-title>
+              <v-card-text class="px-0">
+                <web-cam
+                  ref="webcam"
+                  width="100%"
+                  :deviceId="deviceId"
+                  @started="onStarted"
+                  @stopped="onStopped"
+                  @error="onError"
+                  @cameras="onCameras"
+                  @camera-change="onCameraChange"
+                  :isFrontCam="frontCam"
+                  googleKey="{{googleAPIKey}}"
+                />
 
-        <div class="row">
-          <div class="col-md-12">
-            <select v-model="camera">
-              <option>-- Select Device --</option>
-              <option v-for="device in devices" :key="device.deviceId" :value="device.deviceId">{{ device.label }}</option>
-            </select>
-          </div>
-          <div class="col-md-12">
-            <button type="button" class="btn btn-primary" @click="onCapture">Capture Photo</button>
-            <button type="button" class="btn btn-danger" @click="onStop">Stop Camera</button>
-            <button type="button" class="btn btn-success" @click="onStart">Start Camera</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <h2>Captured Image</h2>
-        <figure class="figure">
-          <img :src="img" class="img-responsive" />
-        </figure>
-      </div>
-    </div>
-  </div>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-select
+            xs4
+            :items="devices"
+            label="Select Device"
+            item-text="label"
+            item-value="deviceId"
+            v-model="camera"
+          ></v-select>
+          <v-switch
+            xs4
+            color="warning"
+            :label="`Front cam: ${frontCam.toString()}`"
+            v-model="frontCam"
+          ></v-switch>
+          <v-btn
+            xs3
+            color="primary"
+            @click="onCapture"
+          >Capture Photo <v-icon>camera</v-icon>
+          </v-btn>
+          <v-btn
+            xs3
+            color="error"
+            @click="onStop"
+          >Stop Camera</v-btn>
+          <v-btn
+            xs3
+            color="success"
+            @click="onStart"
+          >Start Camera</v-btn>
+          <v-flex xs12>
+            <v-card>
+              <v-avatar
+                tile="tile"
+                size="100%"
+                color="grey lighten-4"
+              ><img
+                  :src="img"
+                  aspect-ratio="2.75"
+                />
+              </v-avatar>
+              <v-card-title primary-title>
+                Captured Image
+              </v-card-title>
+
+              <v-card-title v-if="report">
+                Google is guessing
+                <v-chip
+                  v-for="(data,index) in report"
+                  :key="index"
+                  color="green"
+                  text-color="white"
+                >
+                  <v-avatar class="green darken-4">{{data.score | percent}}</v-avatar>
+                  {{data.description}}
+                </v-chip>
+              </v-card-title>
+              <v-card-actions>
+                <v-btn
+                  flat
+                  color="orange"
+                  @click="sendGVision"
+                  :disabled="!img"
+                >Google vision Analayis</v-btn>
+              </v-card-actions>
+            </v-card>
+
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
-import {WebCam} from 'plugin';
-import {find, head} from 'lodash';
+import { WebCam } from 'plugin';
+import { find, head } from 'lodash';
 export default {
   name: 'app',
   components: {
     WebCam
   },
-  data() {
+  data () {
     return {
       img: null,
       camera: null,
       deviceId: null,
-      devices: []
+      devices: [],
+      frontCam: true,
+      report: null
     };
   },
   computed: {
-    device: function() {
+    device: function () {
       return find(this.devices, n => n.deviceId == this.deviceId);
     }
   },
   watch: {
-    camera: function(id) {
+    camera: function (id) {
       this.deviceId = id;
     },
-    devices: function() {
+    devices: function () {
       // Once we have a list select the first one
       let first = head(this.devices);
-      if(first) {
+      if (first) {
         this.camera = first.deviceId;
         this.deviceId = first.deviceId;
       }
     }
   },
   methods: {
-    onCapture() {
-      this.img = this.$refs.webcam.capture();
+    async sendGVision () {
+      const { labelAnnotations } = await this.$refs.webcam.googleVision();
+      this.report = labelAnnotations
     },
-    onStarted(stream) {
+    async onCapture () {
+      this.img = await this.$refs.webcam.capture();
+    },
+    onStarted (stream) {
       console.log('On Started Event', stream);
     },
-    onStopped(stream) {
+    onStopped (stream) {
       console.log('On Stopped Event', stream);
     },
-    onStop() {
+    onStop () {
       this.$refs.webcam.stop();
     },
-    onStart() {
+    onStart () {
       this.$refs.webcam.start();
     },
-    onError(error) {
+    onError (error) {
       console.log('On Error Event', error);
     },
-    onCameras(cameras) {
+    onCameras (cameras) {
       this.devices = cameras;
       console.log('On Cameras Event', cameras);
     },
-    onCameraChange(deviceId) {
+    onCameraChange (deviceId) {
       this.deviceId = deviceId;
       this.camera = deviceId
       console.log('On Camera Change Event', deviceId);
+    }
+  },
+  filters: {
+    percent: function (value) {
+      if (!value) return ''
+      return (Math.floor((value) * 10000) / 100).toFixed(0) + '%'
     }
   }
 };

@@ -8,7 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, '../dist'),
     publicPath: '/dist/',
     filename: 'index.js',
-    library:'vue-web-cam',
+    library: 'vue-cam-vision',
     libraryTarget: 'umd'
   },
   module: {
