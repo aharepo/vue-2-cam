@@ -1,7 +1,7 @@
 {
-  "name": "@kelvin2go/vue-cam-vision",
-  "version": "1.3.0",
-  "description": "Webcam component for Vuejs applications (fork from https://github.com/vinceg/vue-web-cam)",
+  "name": "vue-cam-vision",
+  "version": "0.0.1",
+  "description": "Vuejs Webcam component (fork from https://github.com/vinceg/vue-web-cam) with get user media / google imagecapture / google vision api",
   "main": "dist/index.js",
   "author": "Kelvin Ho <kelvinho84@gmail.com> (https://github.com/kelvin2go)",
   "contributors": [],
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vinceg/vue-web-cam.git"
+    "url": "git+https://github.com/kelvin2go/vue-cam-vision"
   },
   "license": "MIT",
   "devDependencies": {
@@ -47,18 +47,14 @@
     "node": ">= 8.10.0"
   },
   "bugs": {
-    "url": "https://github.com/vinceg/vue-web-cam/issues"
+    "url": "https://github.com/kelvin2go/vue-cam-vision/issues"
   },
-  "homepage": "https://github.com/vinceg/vue-web-cam#readme",
+  "homepage": "https://github.com/kelvin2go/vue-cam-vision#readme",
   "keywords": [
-    "a",
     "vuejs",
-    "for",
     "web",
     "cam",
-    "with",
     "getusermedia",
-    "/",
     "google",
     "vision",
     "api"

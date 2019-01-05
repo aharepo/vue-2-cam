@@ -39,6 +39,7 @@
                   @cameras="onCameras"
                   @camera-change="onCameraChange"
                   :isFrontCam="frontCam"
+                  googleKey="AIzaSyBRU4iqJndUhPZW8jDpqMBBNPoQ5-mwekQ"
                 />
 
               </v-card-text>

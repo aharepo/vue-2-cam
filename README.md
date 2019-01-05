@@ -2,12 +2,12 @@
     <img src="assets/demo.png">
 </p>
 
-# vue-web-cam
+# vue-cam-vision
 
-[![npm](https://img.shields.io/npm/v/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
+<!-- [![npm](https://img.shields.io/npm/v/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
 [![npm](https://img.shields.io/npm/dm/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
 ![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) -->
 
 Webcam component for VueJs. See [this](http://caniuse.com/#feat=stream)
 for browser compatibility.
@@ -16,20 +16,20 @@ for browser compatibility.
 ## Installation
 
 ```
-npm install vue-web-cam --save
+npm install vue-cam-vision --save
 
-yarn add vue-web-cam
+yarn add vue-cam-vision
 ```
 
 ## Usage
 
 ```javascript
 import Vue from 'vue'
-import WebCam from 'vue-web-cam'
+import WebCam from 'vue-cam-vision'
 
 Vue.use(WebCam)
 // or
-import {WebCam} from 'vue-web-cam'
+import {WebCam} from 'vue-cam-vision'
 Vue.component(WebCam.name, WebCam)
 ```
 
@@ -48,6 +48,7 @@ npm run dev
 | autoplay         | boolean | true         | autoplay attribute        |
 | screenshotFormat | string  | 'image/jpeg' | format of screenshot      |
 | deviceId         | string  | null         | currently selected camera |
+| googleKey        | string  | null         | GOOGLE VISION API KEY     |
 
 ### Events
 
@@ -75,4 +76,5 @@ MIT
 
 ## Credits
 
-This is based off [@smronju vue-webcam](https://github.com/smronju/vue-webcam) and [react-webcam](https://github.com/mozmorris/react-webcam)
+This is based off [VinceG vue-web-cam](https://github.com/VinceG/vue-web-cam)
+[@smronju vue-webcam](https://github.com/smronju/vue-webcam) and [react-webcam](https://github.com/mozmorris/react-webcam)
