@@ -1,9 +1,5 @@
 <p align="center">
-    <img width="150" src="assets/logo.png">
-</p>
-
-<p align="center">
-    <img src="assets/splash.png">
+    <img src="assets/demo.png">
 </p>
 
 # vue-web-cam

@@ -9,7 +9,7 @@
           row
           wrap
         >
-          <v-flex xs12>
+          <v-flex xs6>
             <v-card
               dark
               color="primary"
@@ -39,43 +39,12 @@
                   @cameras="onCameras"
                   @camera-change="onCameraChange"
                   :isFrontCam="frontCam"
-                  googleKey="{{googleAPIKey}}"
                 />
 
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-select
-            xs4
-            :items="devices"
-            label="Select Device"
-            item-text="label"
-            item-value="deviceId"
-            v-model="camera"
-          ></v-select>
-          <v-switch
-            xs4
-            color="warning"
-            :label="`Front cam: ${frontCam.toString()}`"
-            v-model="frontCam"
-          ></v-switch>
-          <v-btn
-            xs3
-            color="primary"
-            @click="onCapture"
-          >Capture Photo <v-icon>camera</v-icon>
-          </v-btn>
-          <v-btn
-            xs3
-            color="error"
-            @click="onStop"
-          >Stop Camera</v-btn>
-          <v-btn
-            xs3
-            color="success"
-            @click="onStart"
-          >Start Camera</v-btn>
-          <v-flex xs12>
+          <v-flex xs6>
             <v-card>
               <v-avatar
                 tile="tile"
@@ -113,6 +82,37 @@
             </v-card>
 
           </v-flex>
+          <v-select
+            xs4
+            :items="devices"
+            label="Select Device"
+            item-text="label"
+            item-value="deviceId"
+            v-model="camera"
+          ></v-select>
+          <v-switch
+            xs4
+            color="warning"
+            :label="`Front cam: ${frontCam.toString()}`"
+            v-model="frontCam"
+          ></v-switch>
+          <v-btn
+            xs3
+            color="primary"
+            @click="onCapture"
+          >Capture Photo <v-icon>camera</v-icon>
+          </v-btn>
+          <v-btn
+            xs3
+            color="error"
+            @click="onStop"
+          >Stop Camera</v-btn>
+          <v-btn
+            xs3
+            color="success"
+            @click="onStart"
+          >Start Camera</v-btn>
+
         </v-layout>
       </v-container>
     </v-content>
