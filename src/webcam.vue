@@ -126,7 +126,8 @@ export default {
     changeCamera (deviceId) {
       this.stop()
       this.$emit('camera-change', deviceId)
-      this.loadCamera(deviceId)
+      this.deviceId = deviceId
+      this.loadCamera()
     },
     async loadCameras () {
       try {
@@ -174,7 +175,7 @@ export default {
     // Start the video
     start () {
       if (this.currentDeviceId) {
-        this.loadCamera(this.currentDeviceId)
+        this.loadCamera()
       }
     },
     isMobile () {
@@ -185,6 +186,7 @@ export default {
     },
     changeFront (value) {
       this.isFrontCam = value
+      this.stop()
       this.loadCamera()
     },
     loadCamera () {

@@ -24,10 +24,41 @@ yarn add vue-cam-vision
 ## Usage
 
 ```javascript
-import Vue from 'vue'
-import WebCam from 'vue-cam-vision'
+// vue page
+<template>
+    <WebCam
+        ref="webcam"
+        :deviceId="deviceId"
+        width="auto"
+        height="100%"
+        @cameras="onCameras"
+        @camera-change="onCameraChange"
+        :isFrontCam="frontCam"
+        :googleKey="googleKey"
+        >
+    </WebCam>
+</template>
+import { WebCam } from 'vue-cam-vision'
 
-Vue.use(WebCam)
+export default {
+  data () {
+    return {
+      captures: [],
+      imgReport: [],
+      frontCam: false,
+      webcam: null,
+      img: null,
+      camera: null,
+      deviceId: null,
+      devices: [],
+      googleKey: config.googleVisionKey
+    }
+  },
+  components: {
+    WebCam
+  }
+}
+
 // or
 import {WebCam} from 'vue-cam-vision'
 Vue.component(WebCam.name, WebCam)
