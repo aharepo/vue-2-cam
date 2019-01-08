@@ -79,6 +79,9 @@ export default {
     },
     isFrontCam: function (value) {
       this.changeFront(value)
+    },
+    captures: function (value) {
+      this.$emit('capturedImages', value)
     }
   },
   computed: {
@@ -165,6 +168,7 @@ export default {
     // Stop the video
     stop () {
       if (this.$refs.video !== null && this.$refs.video.srcObject) {
+        console.log('stoping')
         this.stopStreamedVideo(this.$refs.video)
       }
     },
@@ -190,6 +194,7 @@ export default {
       this.loadCamera()
     },
     loadCamera () {
+      console.log(this.Contraints)
       getUserMedia(this.Contraints, (err, stream) => {
         if (err) {
           this.$emit('error', err)
@@ -263,7 +268,7 @@ export default {
     'TEXT_DETECTION': (OCR TEXT_DETECTION detects and extracts text from any image), 
     'DOCUMENT_TEXT_DETECTION': DOCUMENT_TEXT_DETECTION extracts text from an image; the response is optimized for dense text and documents. The JSON includes page, block, paragraph, word, and break information
     */
-    async googleVision (index, type = "LABEL_DETECTION") {
+    async googleVision (type = "LABEL_DETECTION", index) {
       if (!this.googleKey) {
         console.log("no google key detected")
         return
