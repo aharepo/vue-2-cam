@@ -8,7 +8,6 @@
       :autoplay="autoplay"
       :playsinline="playsinline"
     />
-    {{Contraints}}
   </div>
 </template>
 

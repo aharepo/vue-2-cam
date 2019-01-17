@@ -1,6 +1,6 @@
 {
   "name": "vue-cam-vision",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "Vuejs Webcam component (fork from https://github.com/vinceg/vue-web-cam) with get user media / google imagecapture / google vision api",
   "main": "dist/index.js",
   "author": "Kelvin Ho <kelvinho84@gmail.com> (https://github.com/kelvin2go)",
