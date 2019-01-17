@@ -1346,6 +1346,10 @@ exports.default = {
     googleKey: {
       type: String,
       default: null
+    },
+    debug: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -1449,7 +1453,7 @@ exports.default = {
               case 3:
                 deviceInfos = _context.sent;
 
-                console.log(deviceInfos);
+                if (_this2.debug) console.log(deviceInfos);
                 deviceInfos.forEach(function (deviceInfo) {
                   if (deviceInfo.kind === 'videoinput') {
                     _this2.cameras.push(deviceInfo);
@@ -1495,7 +1499,7 @@ exports.default = {
     },
     stop: function stop() {
       if (this.$refs.video !== null && this.$refs.video.srcObject) {
-        console.log('stoping');
+        if (this.debug) console.log('stoping');
         this.stopStreamedVideo(this.$refs.video);
       }
     },
@@ -1538,7 +1542,7 @@ exports.default = {
     loadCamera: function loadCamera() {
       var _this5 = this;
 
-      console.log(this.Contraints);
+      if (this.debug) console.log(this.Contraints);
       (0, _getusermedia2.default)(this.Contraints, function (err, stream) {
         if (err) {
           _this5.$emit('error', err);
@@ -1626,7 +1630,7 @@ exports.default = {
                   reader.onloadend = function () {
                     URL = reader.result;
                     _this7.saveSnapShot(URL);
-
+                    if (_this7.debug) console.log(URL);
                     resolve(URL);
                   };
                   reader.readAsDataURL(blob);
@@ -1701,7 +1705,7 @@ exports.default = {
                   _this8.imgReport = data.responses[0];
                   _this8.captures[imgIndex].imgReport = data.responses[0];
                 }
-                console.log(_this8.imgReport);
+                if (_this8.debug) console.log(_this8.imgReport);
                 _this8.$emit('googleReport', _this8.imgReport);
                 return _context5.abrupt('return', _this8.imgReport);
 
@@ -2089,7 +2093,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_9f626b56___ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_69c9e5a8___ = __webpack_require__(116);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___ = __webpack_require__(48);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(118);
@@ -2102,8 +2106,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var component = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___["default"],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_9f626b56___["a" /* render */],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_9f626b56___["b" /* staticRenderFns */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_69c9e5a8___["a" /* render */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_69c9e5a8___["b" /* staticRenderFns */],
   false,
   null,
   null,
@@ -5797,9 +5801,9 @@ module.exports = SDPUtils;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_9f626b56___ = __webpack_require__(117);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_9f626b56___["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_9f626b56___["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_69c9e5a8___ = __webpack_require__(117);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_69c9e5a8___["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_69c9e5a8___["b"]; });
 
 
 /***/ }),
@@ -5809,7 +5813,7 @@ module.exports = SDPUtils;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return staticRenderFns; });
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}}),_vm._v("\n  "+_vm._s(_vm.Contraints)+"\n")])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}})])}
 var staticRenderFns = []
 
 
