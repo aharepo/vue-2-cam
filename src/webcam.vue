@@ -1,12 +1,15 @@
 <template>
-  <video
-    ref="video"
-    :width="width"
-    :height="height"
-    :src="source"
-    :autoplay="autoplay"
-    :playsinline="playsinline"
-  />
+  <div>
+    <video
+      ref="video"
+      :width="width"
+      :height="height"
+      :src="source"
+      :autoplay="autoplay"
+      :playsinline="playsinline"
+    />
+    {{Contraints}}
+  </div>
 </template>
 
 <script>
@@ -25,7 +28,8 @@ export default {
       imageCapture: {}, // google image capture
       captures: [],
       currentId: null,
-      imgReport: null
+      imgReport: null,
+      lastVideoMode: 'deviceId'
     }
   },
   props: {
@@ -71,34 +75,74 @@ export default {
     googleKey: {
       type: String,
       default: null
+    },
+    debug: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
-    deviceId: function (id) {
-      this.changeCamera(id)
+    deviceId: function (newId, oldId) {
+      if (newId !== oldId) {
+        this.changeCamera(newId)
+        this.lastVideoMode = 'deviceId'
+      }
     },
-    isFrontCam: function (value) {
-      this.changeFront(value)
+    isFrontCam: function (newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.changeFront(newValue)
+        this.lastVideoMode = 'facing'
+      }
     },
     captures: function (value) {
       this.$emit('capturedImages', value)
     }
   },
   computed: {
+    supportFacingMode () {
+      let result = ''
+      if (navigator.mediaDevices.getSupportedConstraints()["facingMode"]) {
+        result = "Supported!"
+      } else {
+        result = "Not supported!"
+      }
+      return result
+    },
     currentDeviceId () {
       return this.deviceId || this.currentId
     },
     Contraints () {
-      return {
-        video: {
+      const facingMode = this.mediaConstraints.video.facingMode || (this.isFrontCam ? 'user' : 'environment')
+      let deviceId = ''
+      if (this.lastVideoMode === 'facing' && !this.isFrontCam) {
+        const back = this.cameras.find(d => {
+          return d.label.toLowerCase().indexOf('back') !== -1
+        }) || (this.cameras.length && this.cameras[this.cameras.length - 1])
+        if (back) {
+          deviceId = this.mediaConstraints.video && this.mediaConstraints.video.facingMode && this.mediaConstraints.video.facingMode.exact ? { exact: back.deviceId } : { ideal: back.deviceId }
+        }
+      }
+      const video = this.lastVideoMode === 'deviceId' ?
+        {
           ...this.mediaConstraints.video,
           ...(this.deviceId ? {
             deviceId: { exact: this.deviceId }
-          } : {}),
-          facingMode: this.mediaConstraints.video.facingMode || (this.isFrontCam ? 'user' : 'environment')
-        },
+          } : {})
+        } :
+        {
+          ...deviceId ? { deviceId } : {},
+          facingMode
+        }
+
+      return {
+        video,
         audio: this.mediaConstraints.audio
       }
+
+      // return {
+      //   video: true,
+      //   audio: false
+      // }
     }
   },
   mounted () {
@@ -135,7 +179,7 @@ export default {
     async loadCameras () {
       try {
         const deviceInfos = await navigator.mediaDevices.enumerateDevices()
-        console.log(deviceInfos)
+        if (this.debug) console.log(deviceInfos)
         deviceInfos.forEach((deviceInfo) => {
           if (deviceInfo.kind === 'videoinput') {
             this.cameras.push(deviceInfo)
@@ -168,7 +212,7 @@ export default {
     // Stop the video
     stop () {
       if (this.$refs.video !== null && this.$refs.video.srcObject) {
-        console.log('stoping')
+        if (this.debug) console.log('stoping')
         this.stopStreamedVideo(this.$refs.video)
       }
     },
@@ -178,9 +222,7 @@ export default {
     },
     // Start the video
     start () {
-      if (this.currentDeviceId) {
-        this.loadCamera()
-      }
+      this.loadCamera()
     },
     isMobile () {
       return typeof window.orientation !== 'undefined'
@@ -194,7 +236,7 @@ export default {
       this.loadCamera()
     },
     loadCamera () {
-      console.log(this.Contraints)
+      if (this.debug) console.log(this.Contraints)
       getUserMedia(this.Contraints, (err, stream) => {
         if (err) {
           this.$emit('error', err)
@@ -244,7 +286,7 @@ export default {
         reader.onloadend = () => {
           URL = reader.result
           this.saveSnapShot(URL)
-          // console.log(URL)
+          if (this.debug) console.log(URL)
           resolve(URL)
         }
         reader.readAsDataURL(blob)
@@ -295,7 +337,7 @@ export default {
         this.imgReport = data.responses[0]
         this.captures[imgIndex].imgReport = data.responses[0]
       }
-      console.log(this.imgReport)
+      if (this.debug) console.log(this.imgReport)
       this.$emit('googleReport', this.imgReport)
       return this.imgReport
     }

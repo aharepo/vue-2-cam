@@ -7,7 +7,7 @@
   "contributors": [],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.config.js",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --config demo/webpack.config.js",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot --config demo/webpack.config.js --host 0.0.0.0",
     "demo": "cross-env NODE_ENV=production webpack --progress --hide-modules --config demo/webpack.config.js"
   },
   "dependencies": {
