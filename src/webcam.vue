@@ -89,7 +89,6 @@ export default {
     },
     isFrontCam: function (newValue, oldValue) {
       if (newValue !== oldValue) {
-        alert(`new ${newValue}`)
         this.changeFrontBack(newValue)
       }
     },
@@ -137,9 +136,6 @@ export default {
         } : {}),
         facingMode
       }
-      // alert(deviceId)
-      // alert(JSON.stringify(this.camsList))
-      // alert(JSON.stringify(video))
       return {
         video,
         audio: this.mediaConstraints.audio
