@@ -8,6 +8,8 @@
       :autoplay="autoplay"
       :playsinline="playsinline"
     />
+    {{lastVideoMode}} {{isFrontCam}}
+    {{Contraints}}
   </div>
 </template>
 
@@ -26,9 +28,9 @@ export default {
       cameras: [],
       imageCapture: {}, // google image capture
       captures: [],
-      currentId: null,
       imgReport: null,
-      lastVideoMode: 'deviceId'
+      lastVideoMode: 'deviceId',
+      camsList: { back: null, front: null }
     }
   },
   props: {
@@ -84,13 +86,12 @@ export default {
     deviceId: function (newId, oldId) {
       if (newId !== oldId) {
         this.changeCamera(newId)
-        this.lastVideoMode = 'deviceId'
       }
     },
     isFrontCam: function (newValue, oldValue) {
       if (newValue !== oldValue) {
-        this.changeFront(newValue)
-        this.lastVideoMode = 'facing'
+        alert(`new ${newValue}`)
+        this.changeFrontBack(newValue)
       }
     },
     captures: function (value) {
@@ -107,47 +108,47 @@ export default {
       }
       return result
     },
-    currentDeviceId () {
-      return this.deviceId || this.currentId
-    },
     Contraints () {
       const facingMode = this.mediaConstraints.video.facingMode || (this.isFrontCam ? 'user' : 'environment')
-      let deviceId = ''
-      if (this.lastVideoMode === 'facing' && !this.isFrontCam) {
-        const back = this.cameras.find(d => {
-          return d.label.toLowerCase().indexOf('back') !== -1
-        }) || (this.cameras.length && this.cameras[this.cameras.length - 1])
-        if (back) {
-          deviceId = this.mediaConstraints.video && this.mediaConstraints.video.facingMode && this.mediaConstraints.video.facingMode.exact ? { exact: back.deviceId } : { ideal: back.deviceId }
-        }
-      }
-      const video = this.lastVideoMode === 'deviceId' ?
-        {
-          ...this.mediaConstraints.video,
-          ...(this.deviceId ? {
-            deviceId: { exact: this.deviceId }
-          } : {})
-        } :
-        {
-          ...deviceId ? { deviceId } : {},
-          facingMode
-        }
+      // let deviceId = ''
 
+      // if (this.lastVideoMode === 'facing') {
+      //   if (!this.isFrontCam && this.camsList.back) {
+      //     deviceId = this.camsList.back.deviceId
+      //   }
+      //   if (this.isFrontCam && this.camsList.front) {
+      //     deviceId = this.camsList.front.deviceId
+      //   }
+      // }
+      // const video = this.lastVideoMode === 'deviceId' ?
+      //   {
+      //     ...this.mediaConstraints.video,
+      //     ...(this.deviceId ? {
+      //       deviceId: { exact: this.deviceId }
+      //     } : {})
+      //   } :
+      //   {
+      //     ...deviceId ? { deviceId } : {},
+      //     facingMode
+      //   }
+      const video = {
+        ...this.mediaConstraints.video,
+        ...(this.deviceId ? {
+          deviceId: { exact: this.deviceId }
+        } : {}),
+        facingMode
+      }
+      // alert(deviceId)
+      // alert(JSON.stringify(this.camsList))
+      // alert(JSON.stringify(video))
       return {
         video,
         audio: this.mediaConstraints.audio
       }
-
-      // return {
-      //   video: true,
-      //   audio: false
-      // }
     }
   },
   mounted () {
-    if (this.isMobile()) { // mobile use backcam as default unless is set
-      this.isFrontCam = this.mediaConstraints.video.facingMode || false
-    }
+
     this.setup()
   },
   methods: {
@@ -182,8 +183,11 @@ export default {
         deviceInfos.forEach((deviceInfo) => {
           if (deviceInfo.kind === 'videoinput') {
             this.cameras.push(deviceInfo)
-            if (deviceInfo) {
-              this.currentId = deviceInfo.deviceId
+            if (deviceInfo.label.toLowerCase().indexOf('back') !== -1) {
+              this.camsList.back = deviceInfo
+            }
+            if (deviceInfo.label.toLowerCase().indexOf('front') !== -1) {
+              this.camsList.front = deviceInfo
             }
           }
         })
@@ -229,10 +233,13 @@ export default {
     toggleFrontBack () {
       this.isFrontCam = !this.isFrontCam
     },
-    changeFront (value) {
-      this.isFrontCam = value
-      this.stop()
-      this.loadCamera()
+    changeFrontBack (newFrontCam) {
+      if (newFrontCam && this.camsList.front) {
+        this.changeCamera(this.camsList.front.deviceId)
+      }
+      if (!newFrontCam && this.camsList.back) {
+        this.changeCamera(this.camsList.back.deviceId)
+      }
     },
     loadCamera () {
       if (this.debug) console.log(this.Contraints)

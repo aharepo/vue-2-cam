@@ -9,7 +9,10 @@
           row
           wrap
         >
-          <v-flex xs6>
+          <v-flex
+            xs12
+            md6
+          >
             <v-card
               dark
               color="primary"
@@ -39,12 +42,16 @@
                   @cameras="onCameras"
                   @camera-change="onCameraChange"
                   :isFrontCam="frontCam"
+                  :debug="true"
                 />
 
               </v-card-text>
             </v-card>
           </v-flex>
-          <v-flex xs6>
+          <v-flex
+            xs12
+            md6
+          >
             <v-card>
               <v-avatar
                 tile="tile"
@@ -147,12 +154,17 @@ export default {
       this.deviceId = id;
     },
     devices: function () {
-      // Once we have a list select the first one
-      let first = head(this.devices);
-      if (first) {
-        this.camera = first.deviceId;
-        this.deviceId = first.deviceId;
+      if (typeof window.orientation === 'undefined') {
+        // Once we have a list select the first one
+        let first = head(this.devices);
+        if (first) {
+          this.camera = first.deviceId;
+          this.deviceId = first.deviceId;
+        }
+      } else {
+        this.frontCam = false
       }
+
     }
   },
   methods: {
