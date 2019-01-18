@@ -8,8 +8,6 @@
       :autoplay="autoplay"
       :playsinline="playsinline"
     />
-    {{lastVideoMode}} {{isFrontCam}}
-    {{Contraints}}
   </div>
 </template>
 
@@ -30,7 +28,8 @@ export default {
       captures: [],
       imgReport: null,
       lastVideoMode: 'deviceId',
-      camsList: { back: null, front: null }
+      camsList: { back: null, front: null },
+      inited: false
     }
   },
   props: {
