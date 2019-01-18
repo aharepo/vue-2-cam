@@ -7,7 +7,7 @@ module.exports = {
   entry: './demo/src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/',
+    publicPath: '/vue/vue-cam-vision/',
     filename: 'build.js'
   },
   module: {
