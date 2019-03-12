@@ -1,7 +1,7 @@
 Online : 
-  [demo](https://kelvinho.js.org/vue/vue-cam-vision/) 
-  [Project Google vision Demo](https://kelvinho.js.org/playground/#/vision)
-  [OCR Demo](https://ocr.dogdogbnb.hk/)
+-   [demo](https://kelvinho.js.org/vue/vue-cam-vision/) 
+-   [Project Google vision Demo](https://kelvinho.js.org/playground/#/vision)
+-   [OCR Demo](https://ocr.dogdogbnb.hk/)
 
 
 <p align="center">
