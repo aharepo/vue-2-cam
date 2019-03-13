@@ -5,6 +5,8 @@ import App from './main.vue'
 // Vue.use(WebCam)
 
 import Vuetify from 'vuetify'
+console.log(process.env)
+Vue.config.productionTip = process.env.NODE_ENV !== 'production'
 
 Vue.use(Vuetify)
 

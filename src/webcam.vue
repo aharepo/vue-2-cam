@@ -108,27 +108,6 @@ export default {
     },
     Contraints () {
       const facingMode = this.mediaConstraints.video.facingMode || (this.isFrontCam ? 'user' : 'environment')
-      // let deviceId = ''
-
-      // if (this.lastVideoMode === 'facing') {
-      //   if (!this.isFrontCam && this.camsList.back) {
-      //     deviceId = this.camsList.back.deviceId
-      //   }
-      //   if (this.isFrontCam && this.camsList.front) {
-      //     deviceId = this.camsList.front.deviceId
-      //   }
-      // }
-      // const video = this.lastVideoMode === 'deviceId' ?
-      //   {
-      //     ...this.mediaConstraints.video,
-      //     ...(this.deviceId ? {
-      //       deviceId: { exact: this.deviceId }
-      //     } : {})
-      //   } :
-      //   {
-      //     ...deviceId ? { deviceId } : {},
-      //     facingMode
-      //   }
       const video = {
         ...this.mediaConstraints.video,
         ...(this.deviceId ? {
@@ -136,6 +115,7 @@ export default {
         } : {}),
         facingMode
       }
+      // alert(JSON.stringify(video))
       return {
         video,
         audio: this.mediaConstraints.audio
@@ -271,7 +251,8 @@ export default {
         image: URL,
         imgReport: {}
       })
-      // console.log(URL)
+
+      if (this.debug) console.log('saved SnapShot')
       return URL
     },
     async gCapture () {

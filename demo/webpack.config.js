@@ -7,7 +7,7 @@ module.exports = {
   entry: './demo/src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/vue/vue-cam-vision/',
+    publicPath: process.env.PUB_PATH || '/',
     filename: 'build.js'
   },
   module: {
@@ -60,7 +60,10 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new webpack.DefinePlugin({
-      'process.env': "'development'"
+      'process.env': {
+        NODE_ENV: '"development"',
+        VUE_APP_OCR_GVA: JSON.stringify(process.env.VUE_APP_OCR_GVA),
+      }
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
