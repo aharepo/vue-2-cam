@@ -1,4 +1,9 @@
-Online : [demo](https://kelvinho.js.org/vue/vue-cam-vision/)
+Online : 
+-   [demo](https://kelvinho.js.org/vue/vue-cam-vision/) 
+-   [Project Google vision Demo](https://kelvinho.js.org/playground/#/vision) (idea from https://experiments.withgoogle.com/thing-translator)
+-   [OCR Demo](https://ocr.dogdogbnb.hk/)
+
+
 <p align="center">
     <img src="assets/demo.png">
 </p>
