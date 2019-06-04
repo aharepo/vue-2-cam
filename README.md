@@ -1,3 +1,13 @@
+# vue-cam-vision
+
+<!-- [![npm](https://img.shields.io/npm/v/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
+[![npm](https://img.shields.io/npm/dm/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
+![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) -->
+
+Webcam component for VueJs. Enable webcam + google AI vision at the same component.  See [this](http://caniuse.com/#feat=stream)
+for browser compatibility.
+
 Online : 
 -   [demo](https://kelvinho.js.org/vue/vue-cam-vision/) 
 -   [Project Google vision Demo](https://kelvinho.js.org/playground/#/vision) (idea from https://experiments.withgoogle.com/thing-translator)
@@ -8,15 +18,7 @@ Online :
     <img src="assets/demo.png">
 </p>
 
-# vue-cam-vision
 
-<!-- [![npm](https://img.shields.io/npm/v/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
-[![npm](https://img.shields.io/npm/dm/vue-web-cam.svg)](https://www.npmjs.com/package/vue-web-cam)
-![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) -->
-
-Webcam component for VueJs. See [this](http://caniuse.com/#feat=stream)
-for browser compatibility.
 
 
 ## Installation
