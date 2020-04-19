@@ -14,7 +14,7 @@
 <script>
 // based from https://github.com/VinceG/vue-web-cam/
 import axios from 'axios'
-import getUserMedia from 'getusermedia'
+import getUserMedia from './getusermedia'
 
 export default {
   name: 'vue-cam-vision',
@@ -218,6 +218,7 @@ export default {
     },
     loadCamera () {
       if (this.debug) console.log(this.Contraints)
+      // navigator.mediaDevices.getUserMedia(this.Contraints, (err, stream) => {
       getUserMedia(this.Contraints, (err, stream) => {
         if (err) {
           this.$emit('error', err)
@@ -287,9 +288,9 @@ export default {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
       return canvas
     },
-    /* type = 
+    /* type =
     'LABEL_DETECTION': Labels can identify objects, locations, activities, animal species, products, and more.
-    'TEXT_DETECTION': (OCR TEXT_DETECTION detects and extracts text from any image), 
+    'TEXT_DETECTION': (OCR TEXT_DETECTION detects and extracts text from any image),
     'DOCUMENT_TEXT_DETECTION': DOCUMENT_TEXT_DETECTION extracts text from an image; the response is optimized for dense text and documents. The JSON includes page, block, paragraph, word, and break information
     */
     async googleVision (type = "LABEL_DETECTION", index) {
