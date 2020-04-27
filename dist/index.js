@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 68);
+/******/ 	return __webpack_require__(__webpack_require__.s = 67);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -84,7 +84,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 var bind = __webpack_require__(29);
-var isBuffer = __webpack_require__(110);
+var isBuffer = __webpack_require__(109);
 
 /*global toString:true*/
 
@@ -419,7 +419,7 @@ $exports.store = store;
 /* 3 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.5.7' };
+var core = module.exports = { version: '2.6.11' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -438,24 +438,24 @@ module.exports = function (it) {
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(14);
-var createDesc = __webpack_require__(40);
-module.exports = __webpack_require__(6) ? function (object, key, value) {
-  return dP.f(object, key, createDesc(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(18)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
 
 
 /***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(18)(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
+var dP = __webpack_require__(14);
+var createDesc = __webpack_require__(40);
+module.exports = __webpack_require__(5) ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
 
 
 /***/ }),
@@ -465,7 +465,7 @@ module.exports = !__webpack_require__(18)(function () {
 var global = __webpack_require__(1);
 var core = __webpack_require__(3);
 var ctx = __webpack_require__(12);
-var hide = __webpack_require__(5);
+var hide = __webpack_require__(6);
 var has = __webpack_require__(13);
 var PROTOTYPE = 'prototype';
 
@@ -604,11 +604,11 @@ module.exports = function (it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(4);
-var IE8_DOM_DEFINE = __webpack_require__(79);
-var toPrimitive = __webpack_require__(99);
+var IE8_DOM_DEFINE = __webpack_require__(78);
+var toPrimitive = __webpack_require__(98);
 var dP = Object.defineProperty;
 
-exports.f = __webpack_require__(6) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+exports.f = __webpack_require__(5) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
   anObject(Attributes);
@@ -629,7 +629,7 @@ exports.f = __webpack_require__(6) ? Object.defineProperty : function defineProp
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(64);
+var normalizeHeaderName = __webpack_require__(63);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -723,7 +723,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(111)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(110)))
 
 /***/ }),
 /* 16 */
@@ -851,11 +851,10 @@ module.exports = function (it) {
 
 var utils = __webpack_require__(0);
 var settle = __webpack_require__(56);
-var buildURL = __webpack_require__(59);
-var parseHeaders = __webpack_require__(65);
-var isURLSameOrigin = __webpack_require__(63);
+var buildURL = __webpack_require__(58);
+var parseHeaders = __webpack_require__(64);
+var isURLSameOrigin = __webpack_require__(62);
 var createError = __webpack_require__(28);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(58);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -867,22 +866,6 @@ module.exports = function xhrAdapter(config) {
     }
 
     var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ("production" !== 'test' &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
 
     // HTTP basic authentication
     if (config.auth) {
@@ -897,8 +880,8 @@ module.exports = function xhrAdapter(config) {
     request.timeout = config.timeout;
 
     // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
         return;
       }
 
@@ -915,9 +898,8 @@ module.exports = function xhrAdapter(config) {
       var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
       var response = {
         data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        status: request.status,
+        statusText: request.statusText,
         headers: responseHeaders,
         config: config,
         request: request
@@ -952,7 +934,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(61);
+      var cookies = __webpack_require__(60);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -1118,22 +1100,22 @@ module.exports = function bind(fn, thisArg) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _promise = __webpack_require__(31);
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _regenerator = __webpack_require__(72);
+var _regenerator = __webpack_require__(71);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(70);
+var _asyncToGenerator2 = __webpack_require__(69);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _extends2 = __webpack_require__(71);
+var _extends2 = __webpack_require__(70);
 
 var _extends3 = _interopRequireDefault(_extends2);
 
@@ -1141,445 +1123,451 @@ var _axios = __webpack_require__(49);
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _getusermedia = __webpack_require__(67);
+var _getusermedia = __webpack_require__(66);
 
 var _getusermedia2 = _interopRequireDefault(_getusermedia);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  name: 'vue-cam-vision',
-  data: function data() {
-    return {
-      source: null,
-      canvas: null,
-      camerasListEmitted: false,
-      cameras: [],
-      imageCapture: {},
-      captures: [],
-      imgReport: null,
-      lastVideoMode: 'deviceId',
-      camsList: { back: null, front: null },
-      inited: false
-    };
-  },
-
-  props: {
-    width: {
-      type: [Number, String],
-      default: '100%'
-    },
-    height: {
-      type: [Number, String],
-      default: 500
-    },
-    autoplay: {
-      type: Boolean,
-      default: true
-    },
-    screenshotFormat: {
-      type: String,
-      default: 'image/jpeg'
-    },
-    deviceId: {
-      type: String,
-      default: null
-    },
-    playsinline: {
-      type: Boolean,
-      default: true
-    },
-    mediaConstraints: {
-      type: Object,
-      default: function _default() {
+    name: "vue-cam-vision",
+    data: function data() {
         return {
-          video: true,
-          audio: false
+            source: null,
+            canvas: null,
+            camerasListEmitted: false,
+            cameras: [],
+            imageCapture: {},
+            captures: [],
+            imgReport: null,
+            lastVideoMode: "deviceId",
+            camsList: {
+                back: null,
+                front: null
+            },
+            inited: false
         };
-      }
     },
-    isFrontCam: {
-      type: Boolean,
-      default: true
-    },
-    maxSnapshot: {
-      type: [Number],
-      default: 3
-    },
-    googleKey: {
-      type: String,
-      default: null
-    },
-    debug: {
-      type: Boolean,
-      default: false
-    }
-  },
-  watch: {
-    deviceId: function deviceId(newId, oldId) {
-      if (newId !== oldId) {
-        this.changeCamera(newId);
-      }
-    },
-    isFrontCam: function isFrontCam(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.changeFrontBack(newValue);
-      }
-    },
-    captures: function captures(value) {
-      this.$emit('capturedImages', value);
-    }
-  },
-  computed: {
-    supportFacingMode: function supportFacingMode() {
-      var result = '';
-      if (navigator.mediaDevices.getSupportedConstraints()["facingMode"]) {
-        result = "Supported!";
-      } else {
-        result = "Not supported!";
-      }
-      return result;
-    },
-    Contraints: function Contraints() {
-      var facingMode = this.mediaConstraints.video.facingMode || (this.isFrontCam ? 'user' : 'environment');
-      var video = (0, _extends3.default)({}, this.mediaConstraints.video, this.deviceId ? {
-        deviceId: { exact: this.deviceId }
-      } : {}, {
-        facingMode: facingMode
-      });
 
-      return {
-        video: video,
-        audio: this.mediaConstraints.audio
-      };
-    }
-  },
-  mounted: function mounted() {
-
-    this.setup();
-  },
-
-  methods: {
-    loadSrcStream: function loadSrcStream(stream) {
-      var _this = this;
-
-      if ('srcObject' in this.$refs.video) {
-        try {
-          this.$refs.video.srcObject = stream;
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        this.source = window.HTMLMediaElement.srcObject(stream);
-      }
-      this.video.onloadedmetadata = function () {
-        _this.video.play();
-      };
-      this.video.play();
-      this.$emit('started', stream);
-    },
-    changeCamera: function changeCamera(deviceId) {
-      this.stop();
-      this.$emit('camera-change', deviceId);
-      this.deviceId = deviceId;
-      this.loadCamera();
-    },
-    loadCameras: function loadCameras() {
-      var _this2 = this;
-
-      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-        var deviceInfos;
-        return _regenerator2.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return navigator.mediaDevices.enumerateDevices();
-
-              case 3:
-                deviceInfos = _context.sent;
-
-                if (_this2.debug) console.log(deviceInfos);
-                deviceInfos.forEach(function (deviceInfo) {
-                  if (deviceInfo.kind === 'videoinput') {
-                    _this2.cameras.push(deviceInfo);
-                    if (deviceInfo.label.toLowerCase().indexOf('back') !== -1) {
-                      _this2.camsList.back = deviceInfo;
-                    }
-                    if (deviceInfo.label.toLowerCase().indexOf('front') !== -1) {
-                      _this2.camsList.front = deviceInfo;
-                    }
-                  }
-                });
-
-                if (!_this2.camerasListEmitted) {
-                  _this2.$emit('cameras', _this2.cameras);
-                  _this2.camerasListEmitted = true;
-                }
-                _context.next = 13;
-                break;
-
-              case 9:
-                _context.prev = 9;
-                _context.t0 = _context['catch'](0);
-
-                _this2.$emit('notsupported', _context.t0);
-                console.log(_context.t0);
-
-              case 13:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, _this2, [[0, 9]]);
-      }))();
-    },
-    stopStreamedVideo: function stopStreamedVideo(videoElem) {
-      var _this3 = this;
-
-      var stream = videoElem.srcObject;
-      var tracks = stream.getTracks();
-      tracks.forEach(function (track) {
-        track.stop();
-        _this3.$emit('stopped', stream);
-        _this3.$refs.video.srcObject = null;
-        _this3.source = null;
-      });
-    },
-    stop: function stop() {
-      if (this.$refs.video !== null && this.$refs.video.srcObject) {
-        if (this.debug) console.log('stoping');
-        this.stopStreamedVideo(this.$refs.video);
-      }
-    },
-    setup: function setup() {
-      var _this4 = this;
-
-      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-        return _regenerator2.default.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return _this4.loadCameras();
-
-              case 2:
-                _this4.start();
-
-              case 3:
-              case 'end':
-                return _context2.stop();
-            }
-          }
-        }, _callee2, _this4);
-      }))();
-    },
-    start: function start() {
-      this.loadCamera();
-    },
-    isMobile: function isMobile() {
-      return typeof window.orientation !== 'undefined';
-    },
-    toggleFrontBack: function toggleFrontBack() {
-      this.isFrontCam = !this.isFrontCam;
-    },
-    changeFrontBack: function changeFrontBack(newFrontCam) {
-      if (newFrontCam && this.camsList.front) {
-        this.changeCamera(this.camsList.front.deviceId);
-      }
-      if (!newFrontCam && this.camsList.back) {
-        this.changeCamera(this.camsList.back.deviceId);
-      }
-    },
-    loadCamera: function loadCamera() {
-      var _this5 = this;
-
-      if (this.debug) console.log(this.Contraints);
-
-      (0, _getusermedia2.default)(this.Contraints, function (err, stream) {
-        if (err) {
-          _this5.$emit('error', err);
-          console.log('failed to get user camera');
-          return;
-        }
-
-        if (window.ImageCapture) {
-          var mediaStreamTrack = stream.getVideoTracks()[0];
-          _this5.imageCapture = new ImageCapture(mediaStreamTrack);
-        }
-        _this5.video = _this5.$refs.video;
-        _this5.loadSrcStream(stream);
-      });
-    },
-    capture: function capture() {
-      var _this6 = this;
-
-      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-        var gURL, URL;
-        return _regenerator2.default.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                if (!window.ImageCapture) {
-                  _context3.next = 5;
-                  break;
-                }
-
-                _context3.next = 3;
-                return _this6.gCapture();
-
-              case 3:
-                gURL = _context3.sent;
-                return _context3.abrupt('return', gURL);
-
-              case 5:
-                _this6.canvas = _this6.getCanvas();
-                URL = _this6.canvas.toDataURL(_this6.screenshotFormat, 1);
-
-                _this6.saveSnapShot(URL);
-                return _context3.abrupt('return', URL);
-
-              case 9:
-              case 'end':
-                return _context3.stop();
-            }
-          }
-        }, _callee3, _this6);
-      }))();
-    },
-    saveSnapShot: function saveSnapShot(URL) {
-      if (this.captures.length > this.maxSnapshot) {
-        this.captures.shift();
-      }
-      this.captures.push({
-        image: URL,
-        imgReport: {}
-      });
-
-      if (this.debug) console.log('saved SnapShot');
-      return URL;
-    },
-    gCapture: function gCapture() {
-      var _this7 = this;
-
-      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
-        var blob, reader, URL;
-        return _regenerator2.default.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return _this7.imageCapture.takePhoto();
-
-              case 2:
-                blob = _context4.sent;
-                reader = new FileReader();
-                URL = null;
-                return _context4.abrupt('return', new _promise2.default(function (resolve, reject) {
-                  reader.onerror = function (err) {
-                    console.error(err);
-                    reader.abort();
-                    reject();
-                  };
-                  reader.onloadend = function () {
-                    URL = reader.result;
-                    _this7.saveSnapShot(URL);
-                    if (_this7.debug) console.log(URL);
-                    resolve(URL);
-                  };
-                  reader.readAsDataURL(blob);
-                }));
-
-              case 6:
-              case 'end':
-                return _context4.stop();
-            }
-          }
-        }, _callee4, _this7);
-      }))();
-    },
-    getCanvas: function getCanvas() {
-      var video = this.$refs.video;
-      if (!this.ctx) {
-        var _canvas = document.createElement('canvas');
-        _canvas.height = video.videoHeight;
-        _canvas.width = video.videoWidth;
-        this.canvas = _canvas;
-        this.ctx = _canvas.getContext('2d');
-      }
-      var ctx = this.ctx,
-          canvas = this.canvas;
-
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      return canvas;
-    },
-    googleVision: function googleVision() {
-      var _this8 = this;
-
-      var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "LABEL_DETECTION";
-      var index = arguments[1];
-      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
-        var API_URL, imgIndex, sendData, _ref, data;
-
-        return _regenerator2.default.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                if (_this8.googleKey) {
-                  _context5.next = 3;
-                  break;
-                }
-
-                console.log("no google key detected");
-                return _context5.abrupt('return');
-
-              case 3:
-                API_URL = 'https://vision.googleapis.com/v1/images:annotate?key=' + _this8.googleKey;
-                imgIndex = index;
-
-                if (!index || typeof index === 'undefined') {
-                  imgIndex = _this8.captures.length - 1;
-                }
-                sendData = {
-                  requests: [{
-                    image: {
-                      content: _this8.captures[imgIndex].image.replace('data:image/jpeg;base64,', '')
-                    },
-                    features: { type: type }
-                  }]
+    props: {
+        width: {
+            type: [Number, String],
+            default: "100%"
+        },
+        height: {
+            type: [Number, String],
+            default: 500
+        },
+        autoplay: {
+            type: Boolean,
+            default: true
+        },
+        screenshotFormat: {
+            type: String,
+            default: "image/jpeg"
+        },
+        deviceId: {
+            type: String,
+            default: null
+        },
+        playsinline: {
+            type: Boolean,
+            default: true
+        },
+        mediaConstraints: {
+            type: Object,
+            default: function _default() {
+                return {
+                    video: true,
+                    audio: false
                 };
-                _context5.next = 9;
-                return _axios2.default.post(API_URL, sendData);
-
-              case 9:
-                _ref = _context5.sent;
-                data = _ref.data;
-
-                if (data && data.responses[0]) {
-                  _this8.imgReport = data.responses[0];
-                  _this8.captures[imgIndex].imgReport = data.responses[0];
-                }
-                if (_this8.debug) console.log(_this8.imgReport);
-                _this8.$emit('googleReport', _this8.imgReport);
-                return _context5.abrupt('return', _this8.imgReport);
-
-              case 15:
-              case 'end':
-                return _context5.stop();
             }
-          }
-        }, _callee5, _this8);
-      }))();
+        },
+        isFrontCam: {
+            type: Boolean,
+            default: true
+        },
+        maxSnapshot: {
+            type: [Number],
+            default: 3
+        },
+        googleKey: {
+            type: String,
+            default: null
+        },
+        debug: {
+            type: Boolean,
+            default: false
+        }
+    },
+    watch: {
+        deviceId: function deviceId(newId, oldId) {
+            if (newId !== oldId) {
+                this.changeCamera(newId);
+            }
+        },
+        isFrontCam: function isFrontCam(newValue, oldValue) {
+            if (newValue !== oldValue) {
+                this.changeFrontBack(newValue);
+            }
+        },
+        captures: function captures(value) {
+            this.$emit("capturedImages", value);
+        }
+    },
+    computed: {
+        supportFacingMode: function supportFacingMode() {
+            var result = "";
+            if (navigator.mediaDevices.getSupportedConstraints()["facingMode"]) {
+                result = "Supported!";
+            } else {
+                result = "Not supported!";
+            }
+            return result;
+        },
+        Contraints: function Contraints() {
+            var facingMode = this.mediaConstraints.video.facingMode || (this.isFrontCam ? "user" : "environment");
+            var video = (0, _extends3.default)({}, this.mediaConstraints.video, this.deviceId ? {
+                deviceId: { exact: this.deviceId }
+            } : {}, {
+                facingMode: facingMode
+            });
+
+            return {
+                video: video,
+                audio: this.mediaConstraints.audio
+            };
+        }
+    },
+    mounted: function mounted() {
+
+        this.setup();
+    },
+
+    methods: {
+        loadSrcStream: function loadSrcStream(stream) {
+            var _this = this;
+
+            if ("srcObject" in this.$refs.video) {
+                try {
+                    this.$refs.video.srcObject = stream;
+                } catch (err) {
+                    console.log(err);
+                }
+            } else {
+                this.source = window.HTMLMediaElement.srcObject(stream);
+            }
+            this.video.onloadedmetadata = function () {
+                _this.video.play();
+            };
+            this.video.play();
+            this.$emit("started", stream);
+        },
+        changeCamera: function changeCamera(deviceId) {
+            this.stop();
+            this.$emit("camera-change", deviceId);
+            this.deviceId = deviceId;
+            this.loadCamera();
+        },
+        loadCameras: function loadCameras() {
+            var _this2 = this;
+
+            return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+                var deviceInfos;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.prev = 0;
+
+                                console.log("1");
+                                _context.next = 4;
+                                return navigator.mediaDevices.enumerateDevices();
+
+                            case 4:
+                                deviceInfos = _context.sent;
+
+                                console.log("2");
+                                if (_this2.debug) console.log(deviceInfos);
+                                deviceInfos.forEach(function (deviceInfo) {
+                                    if (deviceInfo.kind === "videoinput") {
+                                        _this2.cameras.push(deviceInfo);
+                                        if (deviceInfo.label.toLowerCase().indexOf("back") !== -1) {
+                                            _this2.camsList.back = deviceInfo;
+                                        }
+                                        if (deviceInfo.label.toLowerCase().indexOf("front") !== -1) {
+                                            _this2.camsList.front = deviceInfo;
+                                        }
+                                    }
+                                });
+
+                                if (!_this2.camerasListEmitted) {
+                                    _this2.$emit("cameras", _this2.cameras);
+                                    _this2.camerasListEmitted = true;
+                                }
+                                _context.next = 15;
+                                break;
+
+                            case 11:
+                                _context.prev = 11;
+                                _context.t0 = _context["catch"](0);
+
+                                _this2.$emit("notsupported", _context.t0);
+                                console.log(_context.t0);
+
+                            case 15:
+                            case "end":
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, _this2, [[0, 11]]);
+            }))();
+        },
+        stopStreamedVideo: function stopStreamedVideo(videoElem) {
+            var _this3 = this;
+
+            var stream = videoElem.srcObject;
+            var tracks = stream.getTracks();
+            tracks.forEach(function (track) {
+                track.stop();
+                _this3.$emit("stopped", stream);
+                _this3.$refs.video.srcObject = null;
+                _this3.source = null;
+            });
+        },
+        stop: function stop() {
+            if (this.$refs.video !== null && this.$refs.video.srcObject) {
+                if (this.debug) console.log("stoping");
+                this.stopStreamedVideo(this.$refs.video);
+            }
+        },
+        setup: function setup() {
+            var _this4 = this;
+
+            return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
+                    while (1) {
+                        switch (_context2.prev = _context2.next) {
+                            case 0:
+                                _context2.next = 2;
+                                return _this4.loadCameras();
+
+                            case 2:
+                                _this4.start();
+
+                            case 3:
+                            case "end":
+                                return _context2.stop();
+                        }
+                    }
+                }, _callee2, _this4);
+            }))();
+        },
+        start: function start() {
+            this.loadCamera();
+        },
+        isMobile: function isMobile() {
+            return typeof window.orientation !== "undefined";
+        },
+        toggleFrontBack: function toggleFrontBack() {
+            this.isFrontCam = !this.isFrontCam;
+        },
+        changeFrontBack: function changeFrontBack(newFrontCam) {
+            if (newFrontCam && this.camsList.front) {
+                this.changeCamera(this.camsList.front.deviceId);
+            }
+            if (!newFrontCam && this.camsList.back) {
+                this.changeCamera(this.camsList.back.deviceId);
+            }
+        },
+        loadCamera: function loadCamera() {
+            var _this5 = this;
+
+            if (this.debug) console.log(this.Contraints);
+
+            (0, _getusermedia2.default)(this.Contraints, function (err, stream) {
+                if (err) {
+                    _this5.$emit("error", err);
+                    console.log("failed to get user camera");
+                    return;
+                }
+
+                if (window.ImageCapture) {
+                    var mediaStreamTrack = stream.getVideoTracks()[0];
+                    _this5.imageCapture = new ImageCapture(mediaStreamTrack);
+                }
+                _this5.video = _this5.$refs.video;
+                _this5.loadSrcStream(stream);
+            });
+        },
+        capture: function capture() {
+            var _this6 = this;
+
+            return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+                var gURL, URL;
+                return _regenerator2.default.wrap(function _callee3$(_context3) {
+                    while (1) {
+                        switch (_context3.prev = _context3.next) {
+                            case 0:
+                                if (!window.ImageCapture) {
+                                    _context3.next = 5;
+                                    break;
+                                }
+
+                                _context3.next = 3;
+                                return _this6.gCapture();
+
+                            case 3:
+                                gURL = _context3.sent;
+                                return _context3.abrupt("return", gURL);
+
+                            case 5:
+                                _this6.canvas = _this6.getCanvas();
+                                URL = _this6.canvas.toDataURL(_this6.screenshotFormat, 1);
+
+                                _this6.saveSnapShot(URL);
+                                return _context3.abrupt("return", URL);
+
+                            case 9:
+                            case "end":
+                                return _context3.stop();
+                        }
+                    }
+                }, _callee3, _this6);
+            }))();
+        },
+        saveSnapShot: function saveSnapShot(URL) {
+            if (this.captures.length > this.maxSnapshot) {
+                this.captures.shift();
+            }
+            this.captures.push({
+                image: URL,
+                imgReport: {}
+            });
+
+            if (this.debug) console.log("saved SnapShot");
+            return URL;
+        },
+        gCapture: function gCapture() {
+            var _this7 = this;
+
+            return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
+                var blob, reader, URL;
+                return _regenerator2.default.wrap(function _callee4$(_context4) {
+                    while (1) {
+                        switch (_context4.prev = _context4.next) {
+                            case 0:
+                                _context4.next = 2;
+                                return _this7.imageCapture.takePhoto();
+
+                            case 2:
+                                blob = _context4.sent;
+                                reader = new FileReader();
+                                URL = null;
+                                return _context4.abrupt("return", new _promise2.default(function (resolve, reject) {
+                                    reader.onerror = function (err) {
+                                        console.error(err);
+                                        reader.abort();
+                                        reject();
+                                    };
+                                    reader.onloadend = function () {
+                                        URL = reader.result;
+                                        _this7.saveSnapShot(URL);
+                                        if (_this7.debug) console.log(URL);
+                                        resolve(URL);
+                                    };
+                                    reader.readAsDataURL(blob);
+                                }));
+
+                            case 6:
+                            case "end":
+                                return _context4.stop();
+                        }
+                    }
+                }, _callee4, _this7);
+            }))();
+        },
+        getCanvas: function getCanvas() {
+            var video = this.$refs.video;
+            if (!this.ctx) {
+                var _canvas = document.createElement("canvas");
+                _canvas.height = video.videoHeight;
+                _canvas.width = video.videoWidth;
+                this.canvas = _canvas;
+                this.ctx = _canvas.getContext("2d");
+            }
+            var ctx = this.ctx,
+                canvas = this.canvas;
+
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            return canvas;
+        },
+        googleVision: function googleVision() {
+            var _this8 = this;
+
+            var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "LABEL_DETECTION";
+            var index = arguments[1];
+            return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+                var API_URL, imgIndex, sendData, _ref, data;
+
+                return _regenerator2.default.wrap(function _callee5$(_context5) {
+                    while (1) {
+                        switch (_context5.prev = _context5.next) {
+                            case 0:
+                                if (_this8.googleKey) {
+                                    _context5.next = 3;
+                                    break;
+                                }
+
+                                console.log("no google key detected");
+                                return _context5.abrupt("return");
+
+                            case 3:
+                                API_URL = "https://vision.googleapis.com/v1/images:annotate?key=" + _this8.googleKey;
+                                imgIndex = index;
+
+                                if (!index || typeof index === "undefined") {
+                                    imgIndex = _this8.captures.length - 1;
+                                }
+                                sendData = {
+                                    requests: [{
+                                        image: {
+                                            content: _this8.captures[imgIndex].image.replace("data:image/jpeg;base64,", "")
+                                        },
+                                        features: { type: type }
+                                    }]
+                                };
+                                _context5.next = 9;
+                                return _axios2.default.post(API_URL, sendData);
+
+                            case 9:
+                                _ref = _context5.sent;
+                                data = _ref.data;
+
+                                if (data && data.responses[0]) {
+                                    _this8.imgReport = data.responses[0];
+                                    _this8.captures[imgIndex].imgReport = data.responses[0];
+                                }
+                                if (_this8.debug) console.log(_this8.imgReport);
+                                _this8.$emit("googleReport", _this8.imgReport);
+                                return _context5.abrupt("return", _this8.imgReport);
+
+                            case 15:
+                            case "end":
+                                return _context5.stop();
+                        }
+                    }
+                }, _callee5, _this8);
+            }))();
+        }
     }
-  }
 };
 
 /***/ }),
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(74), __esModule: true };
+module.exports = { "default": __webpack_require__(73), __esModule: true };
 
 /***/ }),
 /* 32 */
@@ -1648,12 +1636,12 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 var LIBRARY = __webpack_require__(19);
 var $export = __webpack_require__(7);
-var redefine = __webpack_require__(95);
-var hide = __webpack_require__(5);
+var redefine = __webpack_require__(94);
+var hide = __webpack_require__(6);
 var Iterators = __webpack_require__(9);
-var $iterCreate = __webpack_require__(83);
+var $iterCreate = __webpack_require__(82);
 var setToStringTag = __webpack_require__(21);
-var getPrototypeOf = __webpack_require__(91);
+var getPrototypeOf = __webpack_require__(90);
 var ITERATOR = __webpack_require__(2)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -1721,7 +1709,7 @@ module.exports = function (Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(92);
+var $keys = __webpack_require__(91);
 var enumBugKeys = __webpack_require__(33);
 
 module.exports = Object.keys || function keys(O) {
@@ -1788,7 +1776,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(19) ? 'pure' : 'global',
-  copyright: '© 2018 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -1812,7 +1800,7 @@ module.exports = function (O, D) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(12);
-var invoke = __webpack_require__(80);
+var invoke = __webpack_require__(79);
 var html = __webpack_require__(34);
 var cel = __webpack_require__(17);
 var global = __webpack_require__(1);
@@ -1940,7 +1928,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default.a); 
+ /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default.a);
 
 /***/ }),
 /* 48 */
@@ -1948,10 +1936,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_538f607a___ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___ = __webpack_require__(47);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(115);
 
 
 
@@ -1961,16 +1949,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var component = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___["default"],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_538f607a___["a" /* render */],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_538f607a___["b" /* staticRenderFns */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___["a" /* render */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___["b" /* staticRenderFns */],
   false,
   null,
   null,
   null
-  
+
 )
 
-component.options.__file = "webcam.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
@@ -2030,7 +2017,7 @@ axios.isCancel = __webpack_require__(27);
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(66);
+axios.spread = __webpack_require__(65);
 
 module.exports = axios;
 
@@ -2258,8 +2245,8 @@ var utils = __webpack_require__(0);
 var transformData = __webpack_require__(57);
 var isCancel = __webpack_require__(27);
 var defaults = __webpack_require__(15);
-var isAbsoluteURL = __webpack_require__(62);
-var combineURLs = __webpack_require__(60);
+var isAbsoluteURL = __webpack_require__(61);
+var combineURLs = __webpack_require__(59);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -2435,49 +2422,6 @@ module.exports = function transformData(data, headers, fns) {
 "use strict";
 
 
-// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
-
-var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-function E() {
-  this.message = 'String contains an invalid character';
-}
-E.prototype = new Error;
-E.prototype.code = 5;
-E.prototype.name = 'InvalidCharacterError';
-
-function btoa(input) {
-  var str = String(input);
-  var output = '';
-  for (
-    // initialize result and counter
-    var block, charCode, idx = 0, map = chars;
-    // if the next str index does not exist:
-    //   change the mapping table to "="
-    //   check if d has no fractional digits
-    str.charAt(idx | 0) || (map = '=', idx % 1);
-    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
-    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
-  ) {
-    charCode = str.charCodeAt(idx += 3 / 4);
-    if (charCode > 0xFF) {
-      throw new E();
-    }
-    block = block << 8 | charCode;
-  }
-  return output;
-}
-
-module.exports = btoa;
-
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var utils = __webpack_require__(0);
 
 function encode(val) {
@@ -2545,7 +2489,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2566,7 +2510,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2626,7 +2570,7 @@ module.exports = (
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2647,7 +2591,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2722,7 +2666,7 @@ module.exports = (
 
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2741,7 +2685,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2801,7 +2745,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2835,7 +2779,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2844,20 +2788,32 @@ module.exports = function spread(callback) {
 module.exports = function (constraints, cb) {
     var error;
     var haveOpts = arguments.length === 2;
-    var defaultOpts = { video: true, audio: true };
+    var defaultOpts = {
+        video: true,
+        audio: true
+    };
 
-    var denied = 'PermissionDeniedError';
-    var altDenied = 'PERMISSION_DENIED';
-    var notSatisfied = 'ConstraintNotSatisfiedError';
+    var denied = "PermissionDeniedError";
+    var altDenied = "PERMISSION_DENIED";
+    var notSatisfied = "ConstraintNotSatisfiedError";
 
     if (!haveOpts) {
         cb = constraints;
         constraints = defaultOpts;
     }
 
+    if (typeof navigator === "undefined" || typeof navigator.mediaDevices === "undefined" || !navigator.mediaDevices.getUserMedia) {
+        error = new Error("MediaStreamError");
+        error.name = "NotSupportedError";
+
+        return setTimeout(function () {
+            cb(error);
+        }, 0);
+    }
+
     if (!constraints.audio && !constraints.video) {
-        error = new Error('MediaStreamError');
-        error.name = 'NoMediaRequestedError';
+        error = new Error("MediaStreamError");
+        error.name = "NoMediaRequestedError";
 
         return setTimeout(function () {
             cb(error);
@@ -2869,8 +2825,8 @@ module.exports = function (constraints, cb) {
     }).catch(function (err) {
         var error;
 
-        if (typeof err === 'string') {
-            error = new Error('MediaStreamError');
+        if (typeof err === "string") {
+            error = new Error("MediaStreamError");
             if (err === denied || err === altDenied) {
                 error.name = denied;
             } else {
@@ -2892,7 +2848,7 @@ module.exports = function (constraints, cb) {
 };
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2917,13 +2873,13 @@ module.exports = {
 module.exports.default = module.exports;
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(73), __esModule: true };
+module.exports = { "default": __webpack_require__(72), __esModule: true };
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2967,7 +2923,7 @@ exports.default = function (fn) {
 };
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2975,7 +2931,7 @@ exports.default = function (fn) {
 
 exports.__esModule = true;
 
-var _assign = __webpack_require__(69);
+var _assign = __webpack_require__(68);
 
 var _assign2 = _interopRequireDefault(_assign);
 
@@ -2996,10 +2952,18 @@ exports.default = _assign2.default || function (target) {
 };
 
 /***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(111);
+
+
+/***/ }),
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(112);
+__webpack_require__(102);
+module.exports = __webpack_require__(3).Object.assign;
 
 
 /***/ }),
@@ -3007,31 +2971,23 @@ module.exports = __webpack_require__(112);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(103);
-module.exports = __webpack_require__(3).Object.assign;
-
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
+__webpack_require__(105);
+__webpack_require__(108);
 __webpack_require__(104);
 __webpack_require__(106);
-__webpack_require__(109);
-__webpack_require__(105);
 __webpack_require__(107);
-__webpack_require__(108);
 module.exports = __webpack_require__(3).Promise;
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports) {
 
 module.exports = function () { /* empty */ };
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = function (it, Constructor, name, forbiddenField) {
@@ -3042,14 +2998,14 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(24);
 var toLength = __webpack_require__(44);
-var toAbsoluteIndex = __webpack_require__(98);
+var toAbsoluteIndex = __webpack_require__(97);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -3071,15 +3027,15 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(12);
-var call = __webpack_require__(82);
-var isArrayIter = __webpack_require__(81);
+var call = __webpack_require__(81);
+var isArrayIter = __webpack_require__(80);
 var anObject = __webpack_require__(4);
 var toLength = __webpack_require__(44);
-var getIterFn = __webpack_require__(101);
+var getIterFn = __webpack_require__(100);
 var BREAK = {};
 var RETURN = {};
 var exports = module.exports = function (iterable, entries, fn, that, ITERATOR) {
@@ -3102,16 +3058,16 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(6) && !__webpack_require__(18)(function () {
+module.exports = !__webpack_require__(5) && !__webpack_require__(18)(function () {
   return Object.defineProperty(__webpack_require__(17)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports) {
 
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -3133,7 +3089,7 @@ module.exports = function (fn, args, that) {
 
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
@@ -3147,7 +3103,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
@@ -3165,18 +3121,18 @@ module.exports = function (iterator, fn, value, entries) {
 
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var create = __webpack_require__(88);
+var create = __webpack_require__(87);
 var descriptor = __webpack_require__(40);
 var setToStringTag = __webpack_require__(21);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(5)(IteratorPrototype, __webpack_require__(2)('iterator'), function () { return this; });
+__webpack_require__(6)(IteratorPrototype, __webpack_require__(2)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -3185,7 +3141,7 @@ module.exports = function (Constructor, NAME, next) {
 
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR = __webpack_require__(2)('iterator');
@@ -3213,7 +3169,7 @@ module.exports = function (exec, skipClosing) {
 
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -3222,7 +3178,7 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(1);
@@ -3297,15 +3253,16 @@ module.exports = function () {
 
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 19.1.2.1 Object.assign(target, source, ...)
+var DESCRIPTORS = __webpack_require__(5);
 var getKeys = __webpack_require__(37);
-var gOPS = __webpack_require__(90);
-var pIE = __webpack_require__(93);
+var gOPS = __webpack_require__(89);
+var pIE = __webpack_require__(92);
 var toObject = __webpack_require__(45);
 var IObject = __webpack_require__(35);
 var $assign = Object.assign;
@@ -3332,18 +3289,21 @@ module.exports = !$assign || __webpack_require__(18)(function () {
     var length = keys.length;
     var j = 0;
     var key;
-    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
+    while (length > j) {
+      key = keys[j++];
+      if (!DESCRIPTORS || isEnum.call(S, key)) T[key] = S[key];
+    }
   } return T;
 } : $assign;
 
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(4);
-var dPs = __webpack_require__(89);
+var dPs = __webpack_require__(88);
 var enumBugKeys = __webpack_require__(33);
 var IE_PROTO = __webpack_require__(22)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -3385,14 +3345,14 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(14);
 var anObject = __webpack_require__(4);
 var getKeys = __webpack_require__(37);
 
-module.exports = __webpack_require__(6) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(5) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -3404,14 +3364,14 @@ module.exports = __webpack_require__(6) ? Object.defineProperties : function def
 
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports) {
 
 exports.f = Object.getOwnPropertySymbols;
 
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
@@ -3430,12 +3390,12 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(13);
 var toIObject = __webpack_require__(24);
-var arrayIndexOf = __webpack_require__(77)(false);
+var arrayIndexOf = __webpack_require__(76)(false);
 var IE_PROTO = __webpack_require__(22)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -3453,17 +3413,17 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports) {
 
 exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var hide = __webpack_require__(5);
+var hide = __webpack_require__(6);
 module.exports = function (target, src, safe) {
   for (var key in src) {
     if (safe && target[key]) target[key] = src[key];
@@ -3473,14 +3433,14 @@ module.exports = function (target, src, safe) {
 
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(6);
 
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3488,7 +3448,7 @@ module.exports = __webpack_require__(5);
 var global = __webpack_require__(1);
 var core = __webpack_require__(3);
 var dP = __webpack_require__(14);
-var DESCRIPTORS = __webpack_require__(6);
+var DESCRIPTORS = __webpack_require__(5);
 var SPECIES = __webpack_require__(2)('species');
 
 module.exports = function (KEY) {
@@ -3501,7 +3461,7 @@ module.exports = function (KEY) {
 
 
 /***/ }),
-/* 97 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(23);
@@ -3524,7 +3484,7 @@ module.exports = function (TO_STRING) {
 
 
 /***/ }),
-/* 98 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(23);
@@ -3537,7 +3497,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 99 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -3555,7 +3515,7 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 100 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(1);
@@ -3565,7 +3525,7 @@ module.exports = navigator && navigator.userAgent || '';
 
 
 /***/ }),
-/* 101 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof = __webpack_require__(32);
@@ -3579,13 +3539,13 @@ module.exports = __webpack_require__(3).getIteratorMethod = function (it) {
 
 
 /***/ }),
-/* 102 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(75);
-var step = __webpack_require__(85);
+var addToUnscopables = __webpack_require__(74);
+var step = __webpack_require__(84);
 var Iterators = __webpack_require__(9);
 var toIObject = __webpack_require__(24);
 
@@ -3620,23 +3580,23 @@ addToUnscopables('entries');
 
 
 /***/ }),
-/* 103 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
 var $export = __webpack_require__(7);
 
-$export($export.S + $export.F, 'Object', { assign: __webpack_require__(87) });
+$export($export.S + $export.F, 'Object', { assign: __webpack_require__(86) });
 
 
 /***/ }),
-/* 104 */
+/* 103 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 105 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3648,14 +3608,14 @@ var classof = __webpack_require__(32);
 var $export = __webpack_require__(7);
 var isObject = __webpack_require__(8);
 var aFunction = __webpack_require__(10);
-var anInstance = __webpack_require__(76);
-var forOf = __webpack_require__(78);
+var anInstance = __webpack_require__(75);
+var forOf = __webpack_require__(77);
 var speciesConstructor = __webpack_require__(42);
 var task = __webpack_require__(43).set;
-var microtask = __webpack_require__(86)();
+var microtask = __webpack_require__(85)();
 var newPromiseCapabilityModule = __webpack_require__(20);
 var perform = __webpack_require__(38);
-var userAgent = __webpack_require__(100);
+var userAgent = __webpack_require__(99);
 var promiseResolve = __webpack_require__(39);
 var PROMISE = 'Promise';
 var TypeError = global.TypeError;
@@ -3831,7 +3791,7 @@ if (!USE_NATIVE) {
     this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
     this._n = false;          // <- notify
   };
-  Internal.prototype = __webpack_require__(94)($Promise.prototype, {
+  Internal.prototype = __webpack_require__(93)($Promise.prototype, {
     // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
     then: function then(onFulfilled, onRejected) {
       var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
@@ -3863,7 +3823,7 @@ if (!USE_NATIVE) {
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
 __webpack_require__(21)($Promise, PROMISE);
-__webpack_require__(96)(PROMISE);
+__webpack_require__(95)(PROMISE);
 Wrapper = __webpack_require__(3)[PROMISE];
 
 // statics
@@ -3882,7 +3842,7 @@ $export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
     return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
   }
 });
-$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(84)(function (iter) {
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(83)(function (iter) {
   $Promise.all(iter)['catch'](empty);
 })), PROMISE, {
   // 25.4.4.1 Promise.all(iterable)
@@ -3929,12 +3889,12 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(84)(function
 
 
 /***/ }),
-/* 106 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $at = __webpack_require__(97)(true);
+var $at = __webpack_require__(96)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
 __webpack_require__(36)(String, 'String', function (iterated) {
@@ -3953,7 +3913,7 @@ __webpack_require__(36)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3980,7 +3940,7 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 108 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3999,12 +3959,12 @@ $export($export.S, 'Promise', { 'try': function (callbackfn) {
 
 
 /***/ }),
-/* 109 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(102);
+__webpack_require__(101);
 var global = __webpack_require__(1);
-var hide = __webpack_require__(5);
+var hide = __webpack_require__(6);
 var Iterators = __webpack_require__(9);
 var TO_STRING_TAG = __webpack_require__(2)('toStringTag');
 
@@ -4024,7 +3984,7 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 
 /***/ }),
-/* 110 */
+/* 109 */
 /***/ (function(module, exports) {
 
 /*!
@@ -4034,24 +3994,14 @@ for (var i = 0; i < DOMIterables.length; i++) {
  * @license  MIT
  */
 
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
 
 /***/ }),
-/* 111 */
+/* 110 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -4241,7 +4191,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 112 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -4266,7 +4216,7 @@ var oldRuntime = hadRuntime && g.regeneratorRuntime;
 // Force reevalutation of runtime.js.
 g.regeneratorRuntime = undefined;
 
-module.exports = __webpack_require__(113);
+module.exports = __webpack_require__(112);
 
 if (hadRuntime) {
   // Restore the original runtime.
@@ -4282,7 +4232,7 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 113 */
+/* 112 */
 /***/ (function(module, exports) {
 
 /**
@@ -5015,17 +4965,17 @@ if (hadRuntime) {
 
 
 /***/ }),
-/* 114 */
+/* 113 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_538f607a___ = __webpack_require__(115);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_538f607a___["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_538f607a___["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___ = __webpack_require__(114);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___["b"]; });
 
 
 /***/ }),
-/* 115 */
+/* 114 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5037,7 +4987,7 @@ var staticRenderFns = []
 
 
 /***/ }),
-/* 116 */
+/* 115 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5115,7 +5065,7 @@ function normalizeComponent (
       // for template-only hot-reload because in that case the render fn doesn't
       // go through the normalizer
       options._injectStyles = hook
-      // register for functioal component in vue file
+      // register for functional component in vue file
       var originalRender = options.render
       options.render = function renderWithStyleInjection (h, context) {
         hook.call(context)
