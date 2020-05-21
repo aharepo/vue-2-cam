@@ -1252,7 +1252,7 @@ exports.default = {
                 try {
                     this.$refs.video.srcObject = stream;
                 } catch (err) {
-                    console.log(err);
+                    console.log("loadSrcStream error=" + err);
                 }
             } else {
                 this.source = window.HTMLMediaElement.srcObject(stream);
@@ -1279,15 +1279,12 @@ exports.default = {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 _context.prev = 0;
-
-                                console.log("1");
-                                _context.next = 4;
+                                _context.next = 3;
                                 return navigator.mediaDevices.enumerateDevices();
 
-                            case 4:
+                            case 3:
                                 deviceInfos = _context.sent;
 
-                                console.log("2");
                                 if (_this2.debug) console.log(deviceInfos);
                                 deviceInfos.forEach(function (deviceInfo) {
                                     if (deviceInfo.kind === "videoinput") {
@@ -1305,22 +1302,22 @@ exports.default = {
                                     _this2.$emit("cameras", _this2.cameras);
                                     _this2.camerasListEmitted = true;
                                 }
-                                _context.next = 15;
+                                _context.next = 13;
                                 break;
 
-                            case 11:
-                                _context.prev = 11;
+                            case 9:
+                                _context.prev = 9;
                                 _context.t0 = _context["catch"](0);
 
                                 _this2.$emit("notsupported", _context.t0);
                                 console.log(_context.t0);
 
-                            case 15:
+                            case 13:
                             case "end":
                                 return _context.stop();
                         }
                     }
-                }, _callee, _this2, [[0, 11]]);
+                }, _callee, _this2, [[0, 9]]);
             }))();
         },
         stopStreamedVideo: function stopStreamedVideo(videoElem) {
@@ -1534,7 +1531,10 @@ exports.default = {
                                         image: {
                                             content: _this8.captures[imgIndex].image.replace("data:image/jpeg;base64,", "")
                                         },
-                                        features: { type: type }
+                                        features: { type: type },
+                                        imageContext: {
+                                            languageHints: ["en-US"]
+                                        }
                                     }]
                                 };
                                 _context5.next = 9;
@@ -1928,7 +1928,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default.a);
+ /* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__node_modules_babel_loader_lib_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_script_lang_js____default.a); 
 
 /***/ }),
 /* 48 */
@@ -1936,7 +1936,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___ = __webpack_require__(47);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(115);
@@ -1949,13 +1949,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var component = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___["default"],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___["a" /* render */],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_56bb9978___["b" /* staticRenderFns */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___["a" /* render */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___["b" /* staticRenderFns */],
   false,
   null,
   null,
   null
-
+  
 )
 
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
@@ -4969,9 +4969,9 @@ if (hadRuntime) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___ = __webpack_require__(114);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_56bb9978___["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___ = __webpack_require__(114);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___["b"]; });
 
 
 /***/ }),

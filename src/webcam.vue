@@ -136,7 +136,7 @@
                     try {
                         this.$refs.video.srcObject = stream;
                     } catch (err) {
-                        console.log(err);
+                        console.log(`loadSrcStream error=${err}`);
                     }
                 } else {
                     // old broswers
@@ -156,9 +156,7 @@
             },
             async loadCameras() {
                 try {
-                    console.log("1");
                     const deviceInfos = await navigator.mediaDevices.enumerateDevices();
-                    console.log("2");
                     if (this.debug) console.log(deviceInfos);
                     deviceInfos.forEach((deviceInfo) => {
                         if (deviceInfo.kind === "videoinput") {
@@ -316,7 +314,12 @@
                             content: this.captures[imgIndex].image
                                 .replace("data:image/jpeg;base64,", "")
                         },
-                        features: { type }
+                        features: { type },
+                        imageContext: {
+                            languageHints: [
+                                "en-US",
+                            ],
+                        },
                     }]
                 };
                 const { data } = await axios.post(
