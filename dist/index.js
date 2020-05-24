@@ -1158,6 +1158,20 @@ exports.default = {
             type: [Number, String],
             default: 500
         },
+        trimX: {
+            type: Number,
+            default: 0
+        },
+        trimY: {
+            type: Number,
+            default: 0
+        },
+        trimWidth: {
+            type: Number
+        },
+        trimHeight: {
+            type: Number
+        },
         autoplay: {
             type: Boolean,
             default: true
@@ -1487,16 +1501,20 @@ exports.default = {
         getCanvas: function getCanvas() {
             var video = this.$refs.video;
             if (!this.ctx) {
-                var _canvas = document.createElement("canvas");
+                var _canvas = this.$refs.canvas;
                 _canvas.height = video.videoHeight;
                 _canvas.width = video.videoWidth;
                 this.canvas = _canvas;
                 this.ctx = _canvas.getContext("2d");
             }
             var ctx = this.ctx,
-                canvas = this.canvas;
+                canvas = this.canvas,
+                trimX = this.trimX,
+                trimY = this.trimY,
+                trimWidth = this.trimWidth,
+                trimHeight = this.trimHeight;
 
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
             return canvas;
         },
         googleVision: function googleVision() {
@@ -1936,7 +1954,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_6ae6a30e___ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___ = __webpack_require__(47);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(115);
@@ -1949,8 +1967,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var component = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___["default"],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___["a" /* render */],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_75ba7dba___["b" /* staticRenderFns */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_6ae6a30e___["a" /* render */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_6ae6a30e___["b" /* staticRenderFns */],
   false,
   null,
   null,
@@ -4969,9 +4987,9 @@ if (hadRuntime) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___ = __webpack_require__(114);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_75ba7dba___["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_6ae6a30e___ = __webpack_require__(114);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_6ae6a30e___["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_6ae6a30e___["b"]; });
 
 
 /***/ }),
@@ -4981,7 +4999,7 @@ if (hadRuntime) {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return staticRenderFns; });
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}})])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}}),_vm._v(" "),_c('canvas',{ref:"canvas",attrs:{"width":_vm.trimWidth,"height":_vm.trimHeight}}),_vm._v(" "),_c('div',{ref:"mask-top",staticClass:"mask1",style:({position: 'absolute', top: '0px' , left: '0px', width: _vm.width + 'px', height: _vm.trimY + 'px', background: 'black', opacity: '0.8'})}),_vm._v(" "),_c('div',{ref:"mask-left",staticClass:"mask",style:({position: 'absolute', top: _vm.trimY + 'px' , left: '0px', width: _vm.trimX + 'px', height: _vm.trimHeight + 'px', background: 'black', opacity: '0.8'})}),_vm._v(" "),_c('div',{ref:"mask-right",staticClass:"mask",style:({position: 'absolute', top: _vm.trimY + 'px' , left: (parseInt(_vm.trimX) + parseInt(_vm.trimWidth)) + 'px', width: (parseInt(_vm.width) - parseInt(_vm.trimWidth) - parseInt(_vm.trimX)) + 'px', height: _vm.trimHeight + 'px', background: 'black', opacity: '0.8'})}),_vm._v(" "),_c('div',{ref:"mask-bottom",staticClass:"mask",style:({position: 'absolute', top: (parseInt(_vm.trimY) + parseInt(_vm.trimHeight)) + 'px' , left: '0px', width: _vm.width + 'px', height: (parseInt(_vm.height) - parseInt(_vm.trimY) - parseInt(_vm.trimHeight)) + 'px', background: 'black', opacity: '0.8'})})])}
 var staticRenderFns = []
 
 
@@ -5056,7 +5074,12 @@ function normalizeComponent (
     options._ssrRegister = hook
   } else if (injectStyles) {
     hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      ? function () {
+        injectStyles.call(
+          this,
+          (options.functional ? this.parent : this).$root.$options.shadowRoot
+        )
+      }
       : injectStyles
   }
 
