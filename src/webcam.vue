@@ -10,13 +10,13 @@
         />
         <canvas 
             ref="canvas"
-            :width="trimWidth"
-            :height="trimHeight"
+            :width="trimWidth * 2"
+            :height="trimHeight * 2"
         />
-        <div ref="mask-top" class="mask1" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-right" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: (parseInt(trimX) + parseInt(trimWidth)) + 'px', width: (parseInt(width) - parseInt(trimWidth) - parseInt(trimX)) + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-bottom" class="mask" v-bind:style="{position: 'absolute', top: (parseInt(trimY) + parseInt(trimHeight)) + 'px' , left: '0px', width: width + 'px', height: (parseInt(height) - parseInt(trimY) - parseInt(trimHeight)) + 'px', background: 'black', opacity: '0.8'}" />
+        <div ref="mask-top" class="mask1" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.4'}" />
+        <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.4'}" />
+        <div ref="mask-right" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: (parseInt(trimX) + parseInt(trimWidth)) + 'px', width: (parseInt(width) - parseInt(trimWidth) - parseInt(trimX)) + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.4'}" />
+        <div ref="mask-bottom" class="mask" v-bind:style="{position: 'absolute', top: (parseInt(trimY) + parseInt(trimHeight)) + 'px' , left: '0px', width: width + 'px', height: (parseInt(height) - parseInt(trimY) - parseInt(trimHeight)) + 'px', background: 'black', opacity: '0.4'}" />
     </div>
 </template>
 
@@ -263,10 +263,12 @@
                 });
             },
             async capture() {
+/*
                 if (window.ImageCapture) {
                     const gURL = await this.gCapture();
                     return gURL;
                 }
+*/
                 this.canvas = this.getCanvas();
                 const URL = this.canvas.toDataURL(this.screenshotFormat, 1);
                 this.saveSnapShot(URL);
@@ -308,15 +310,17 @@
                 if (!this.ctx) {
                     // const canvas = document.createElement("canvas");
                     const canvas = this.$refs.canvas;
-                    canvas.height = video.videoHeight;
-                    canvas.width = video.videoWidth;
+                    // canvas.height = video.videoHeight;
+                    // canvas.width = video.videoWidth;
                     this.canvas = canvas;
                     this.ctx = canvas.getContext("2d");
+                    this.ctx = canvas.getContext("2d");
                 }
-                // const { ctx, canvas } = this;
+                //const { ctx, canvas } = this;
                 // ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
-                ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
+                //ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
+                ctx.drawImage(video, 0, 300, 720, 100, 0, 0, trimWidth * 2, trimHeight * 2);
                 return canvas;
             },
             /* type =
