@@ -8,18 +8,13 @@
             :autoplay="autoplay"
             :playsinline="playsinline"
         />
-        <canvas 
-            ref="canvas"
-            :width="trimWidth * 2"
-            :height="trimHeight * 2"
-        />
-        <div ref="mask-top" class="mask1" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.4'}" />
-        <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.4'}" />
-        <div ref="mask-right" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: (parseInt(trimX) + parseInt(trimWidth)) + 'px', width: (parseInt(width) - parseInt(trimWidth) - parseInt(trimX)) + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.4'}" />
-        <div ref="mask-bottom" class="mask" v-bind:style="{position: 'absolute', top: (parseInt(trimY) + parseInt(trimHeight)) + 'px' , left: '0px', width: width + 'px', height: (parseInt(height) - parseInt(trimY) - parseInt(trimHeight)) + 'px', background: 'black', opacity: '0.4'}" />
+        <canvas ref="canvas" />
+        <div ref="mask-top" class="mask" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
+        <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
+        <div ref="mask-right" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: (trimX + trimWidth) + 'px', width: (width - trimWidth - trimX) + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
+        <div ref="mask-bottom" class="mask" v-bind:style="{position: 'absolute', top: (trimY + trimHeight) + 'px' , left: '0px', width: width + 'px', height: (height - trimY - trimHeight) + 'px', background: 'black', opacity: '0.8'}" />
     </div>
 </template>
-
 <script>
     // based from https://github.com/VinceG/vue-web-cam/
     import axios from "axios";
@@ -54,18 +49,18 @@
                 default: 500
             },
             trimX: {
-                type: Number,
+                type: [Number, String],
                 default: 0
             },
             trimY: {
-                type: Number,
+                type: [Number, String],
                 default: 0
             },
             trimWidth: {
-                type: Number,
+                type: [Number, String],
             },
             trimHeight: {
-                type: Number,
+                type: [Number, String],
             },
             autoplay: {
                 type: Boolean,
@@ -308,17 +303,14 @@
             getCanvas() {
                 const video = this.$refs.video;
                 if (!this.ctx) {
-                    // const canvas = document.createElement("canvas");
                     const canvas = this.$refs.canvas;
-                    // canvas.height = video.videoHeight;
-                    // canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
                     this.canvas = canvas;
                     this.ctx = canvas.getContext("2d");
                 }
-                //const { ctx, canvas } = this;
-                // ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
-                ctx.drawImage(video, trimX * 2, trimY * 2, trimWidth * 2, trimHeight * 2, 0, 0, trimWidth * 2, trimHeight * 2);
+                ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
                 return canvas;
             },
             /* type =
