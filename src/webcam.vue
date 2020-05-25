@@ -10,8 +10,8 @@
         />
         <canvas 
             ref="canvas"
-            :width="trimWidth"
-            :height="trimHeight"
+            :width="trimWidth * 2"
+            :height="trimHeight * 2"
         />
         <div ref="mask-top" class="mask1" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.4'}" />
         <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimHeight + 'px', background: 'black', opacity: '0.4'}" />
@@ -318,8 +318,7 @@
                 //const { ctx, canvas } = this;
                 // ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
-                //ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
-                ctx.drawImage(video, 0, 300, 720, 100, 0, 0, trimWidth, trimHeight);
+                ctx.drawImage(video, trimX * 2, trimY * 2, trimWidth * 2, trimHeight * 2, 0, 0, trimWidth * 2, trimHeight * 2);
                 return canvas;
             },
             /* type =
