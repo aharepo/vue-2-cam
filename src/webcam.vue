@@ -258,10 +258,12 @@
                 });
             },
             async capture() {
+/*
                 if (window.ImageCapture) {
                     const gURL = await this.gCapture();
                     return gURL;
                 }
+*/
                 this.canvas = this.getCanvas();
                 const URL = this.canvas.toDataURL(this.screenshotFormat, 1);
                 this.saveSnapShot(URL);

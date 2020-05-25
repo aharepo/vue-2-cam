@@ -1415,31 +1415,18 @@ exports.default = {
             var _this6 = this;
 
             return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-                var gURL, URL;
+                var URL;
                 return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
-                                if (!window.ImageCapture) {
-                                    _context3.next = 5;
-                                    break;
-                                }
-
-                                _context3.next = 3;
-                                return _this6.gCapture();
-
-                            case 3:
-                                gURL = _context3.sent;
-                                return _context3.abrupt("return", gURL);
-
-                            case 5:
                                 _this6.canvas = _this6.getCanvas();
                                 URL = _this6.canvas.toDataURL(_this6.screenshotFormat, 1);
 
                                 _this6.saveSnapShot(URL);
                                 return _context3.abrupt("return", URL);
 
-                            case 9:
+                            case 4:
                             case "end":
                                 return _context3.stop();
                         }
