@@ -49,18 +49,18 @@
                 default: 500
             },
             trimX: {
-                type: Number,
+                type: [Number, String],
                 default: 0
             },
             trimY: {
-                type: Number,
+                type: [Number, String],
                 default: 0
             },
             trimWidth: {
-                type: Number,
+                type: [Number, String],
             },
             trimHeight: {
-                type: Number,
+                type: [Number, String],
             },
             autoplay: {
                 type: Boolean,
