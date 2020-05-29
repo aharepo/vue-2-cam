@@ -9,10 +9,6 @@
             :playsinline="playsinline"
         />
         <canvas ref="canvas" />
-        <div ref="mask-top" class="mask" v-bind:style="{position: 'absolute', top: '0px' , left: '0px', width: width + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-left" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: '0px', width: trimX + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-right" class="mask" v-bind:style="{position: 'absolute', top: trimY + 'px' , left: (trimX + trimWidth) + 'px', width: (width - trimWidth - trimX) + 'px', height: trimY + 'px', background: 'black', opacity: '0.8'}" />
-        <div ref="mask-bottom" class="mask" v-bind:style="{position: 'absolute', top: (trimY + trimHeight) + 'px' , left: '0px', width: width + 'px', height: (height - trimY - trimHeight) + 'px', background: 'black', opacity: '0.8'}" />
     </div>
 </template>
 <script>
@@ -258,12 +254,10 @@
                 });
             },
             async capture() {
-/*
                 if (window.ImageCapture) {
                     const gURL = await this.gCapture();
                     return gURL;
                 }
-*/
                 this.canvas = this.getCanvas();
                 const URL = this.canvas.toDataURL(this.screenshotFormat, 1);
                 this.saveSnapShot(URL);
@@ -302,15 +296,21 @@
             },
             getCanvas() {
                 const video = this.$refs.video;
-                if (!this.ctx) {
-                    const canvas = this.$refs.canvas;
-                    canvas.height = video.videoHeight;
-                    canvas.width = video.videoWidth;
-                    this.canvas = canvas;
-                    this.ctx = canvas.getContext("2d");
-                }
+		const ratio = video.height / video.width;
+                this.canvas = this.$refs.canvas;
+                this.ctx = this.canvas.getContext("2d");
                 const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
-                ctx.drawImage(video, trimX, trimY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
+		canvas.width = trimWidth;
+		canvas.height = trimHeight;
+                ctx.drawImage(video, 
+			trimX * ratio, 
+			trimY * ratio, 
+			trimWidth * ratio, 
+			trimHeight * ratio, 
+			0, 
+			0, 
+			trimWidth, 
+			trimHeight);
                 return canvas;
             },
             /* type =
