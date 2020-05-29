@@ -8,9 +8,9 @@
             :autoplay="autoplay"
             :playsinline="playsinline"
         />
+        <canvas ref="canvas" />
     </div>
 </template>
-
 <script>
     // based from https://github.com/VinceG/vue-web-cam/
     import axios from "axios";
@@ -43,6 +43,20 @@
             height: {
                 type: [Number, String],
                 default: 500
+            },
+            trimX: {
+                type: [Number, String],
+                default: 0
+            },
+            trimY: {
+                type: [Number, String],
+                default: 0
+            },
+            trimWidth: {
+                type: [Number, String],
+            },
+            trimHeight: {
+                type: [Number, String],
             },
             autoplay: {
                 type: Boolean,
@@ -282,15 +296,21 @@
             },
             getCanvas() {
                 const video = this.$refs.video;
-                if (!this.ctx) {
-                    const canvas = document.createElement("canvas");
-                    canvas.height = video.videoHeight;
-                    canvas.width = video.videoWidth;
-                    this.canvas = canvas;
-                    this.ctx = canvas.getContext("2d");
-                }
-                const { ctx, canvas } = this;
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+		const ratio = video.height / video.width;
+                this.canvas = this.$refs.canvas;
+                this.ctx = this.canvas.getContext("2d");
+                const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
+		canvas.width = trimWidth;
+		canvas.height = trimHeight;
+                ctx.drawImage(video, 
+			trimX * ratio, 
+			trimY * ratio, 
+			trimWidth * ratio, 
+			trimHeight * ratio, 
+			0, 
+			0, 
+			trimWidth, 
+			trimHeight);
                 return canvas;
             },
             /* type =
