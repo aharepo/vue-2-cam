@@ -254,10 +254,10 @@
                 });
             },
             async capture() {
-                if (window.ImageCapture) {
-                    const gURL = await this.gCapture();
-                    return gURL;
-                }
+                // if (window.ImageCapture) {
+                //     const gURL = await this.gCapture();
+                //     return gURL;
+                // }
                 this.canvas = this.getCanvas();
                 const URL = this.canvas.toDataURL(this.screenshotFormat, 1);
                 this.saveSnapShot(URL);
@@ -296,21 +296,21 @@
             },
             getCanvas() {
                 const video = this.$refs.video;
-		const ratio = video.height / video.width;
+        		const ratio = video.height / video.width;
                 this.canvas = this.$refs.canvas;
                 this.ctx = this.canvas.getContext("2d");
                 const { ctx, canvas, trimX, trimY, trimWidth, trimHeight } = this;
-		canvas.width = trimWidth;
-		canvas.height = trimHeight;
-                ctx.drawImage(video, 
-			trimX * ratio, 
-			trimY * ratio, 
-			trimWidth * ratio, 
-			trimHeight * ratio, 
-			0, 
-			0, 
-			trimWidth, 
-			trimHeight);
+		        canvas.width = trimWidth;
+		        canvas.height = trimHeight;
+                ctx.drawImage(video,
+                    trimX * ratio,
+                    trimY * ratio,
+                    trimWidth * ratio,
+                    trimHeight * ratio,
+                    0,
+                    0,
+                    trimWidth,
+                    trimHeight);
                 return canvas;
             },
             /* type =
