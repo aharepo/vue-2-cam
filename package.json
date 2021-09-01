@@ -1,6 +1,6 @@
 {
     "name": "vue-2-cam",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "description": "VueJS 2 Webcam component (fork from https://github.com/shaya72/vue-cam-vision) with get user media / google imagecapture / google vision api",
     "main": "dist/index.js",
     "author": {
@@ -21,7 +21,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/kelvin2go/vue-cam-vision"
+        "url": "git+https://github.com/thaintp/vue-2-cam"
     },
     "license": "MIT",
     "devDependencies": {
@@ -54,9 +54,9 @@
         "node": ">= 8.10.0"
     },
     "bugs": {
-        "url": "https://github.com/kelvin2go/vue-cam-vision/issues"
+        "url": "https://github.com/thaintp/vue-2-cam/issues"
     },
-    "homepage": "https://github.com/kelvin2go/vue-cam-vision#readme",
+    "homepage": "https://github.com/thaintp/vue-2-cam#readme",
     "keywords": [
         "vuejs",
         "web",
