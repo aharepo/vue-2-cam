@@ -419,7 +419,7 @@ $exports.store = store;
 /* 3 */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
+var core = module.exports = { version: '2.6.12' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -1254,7 +1254,6 @@ exports.default = {
         }
     },
     mounted: function mounted() {
-
         this.setup();
     },
 
@@ -1415,31 +1414,18 @@ exports.default = {
             var _this6 = this;
 
             return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-                var gURL, URL;
+                var URL;
                 return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
-                                if (!window.ImageCapture) {
-                                    _context3.next = 5;
-                                    break;
-                                }
-
-                                _context3.next = 3;
-                                return _this6.gCapture();
-
-                            case 3:
-                                gURL = _context3.sent;
-                                return _context3.abrupt("return", gURL);
-
-                            case 5:
                                 _this6.canvas = _this6.getCanvas();
                                 URL = _this6.canvas.toDataURL(_this6.screenshotFormat, 1);
 
                                 _this6.saveSnapShot(URL);
                                 return _context3.abrupt("return", URL);
 
-                            case 9:
+                            case 4:
                             case "end":
                                 return _context3.stop();
                         }
@@ -1500,19 +1486,17 @@ exports.default = {
         },
         getCanvas: function getCanvas() {
             var video = this.$refs.video;
-            var ratio = video.height / video.width;
-            this.canvas = this.$refs.canvas;
-            this.ctx = this.canvas.getContext("2d");
+            if (!this.ctx) {
+                var _canvas = document.createElement("canvas");
+                _canvas.height = video.videoHeight;
+                _canvas.width = video.videoWidth;
+                this.canvas = _canvas;
+                this.ctx = _canvas.getContext("2d");
+            }
             var ctx = this.ctx,
-                canvas = this.canvas,
-                trimX = this.trimX,
-                trimY = this.trimY,
-                trimWidth = this.trimWidth,
-                trimHeight = this.trimHeight;
+                canvas = this.canvas;
 
-            canvas.width = trimWidth;
-            canvas.height = trimHeight;
-            ctx.drawImage(video, trimX * ratio, trimY * ratio, trimWidth * ratio, trimHeight * ratio, 0, 0, trimWidth, trimHeight);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             return canvas;
         },
         googleVision: function googleVision() {
@@ -1792,7 +1776,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(19) ? 'pure' : 'global',
-  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -1952,7 +1936,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_8e189028___ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_e0cd8258___ = __webpack_require__(113);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___ = __webpack_require__(47);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___) if(["default","default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___[key]; }) }(__WEBPACK_IMPORT_KEY__));
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__ = __webpack_require__(115);
@@ -1965,8 +1949,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var component = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__node_modules_vue_loader_lib_runtime_componentNormalizer_js__["a" /* default */])(
   __WEBPACK_IMPORTED_MODULE_1__webcam_vue_vue_type_script_lang_js___["default"],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_8e189028___["a" /* render */],
-  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_8e189028___["b" /* staticRenderFns */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_e0cd8258___["a" /* render */],
+  __WEBPACK_IMPORTED_MODULE_0__webcam_vue_vue_type_template_id_e0cd8258___["b" /* staticRenderFns */],
   false,
   null,
   null,
@@ -4985,9 +4969,9 @@ if (hadRuntime) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_8e189028___ = __webpack_require__(114);
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_8e189028___["a"]; });
-/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_8e189028___["b"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_e0cd8258___ = __webpack_require__(114);
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_e0cd8258___["a"]; });
+/* harmony namespace reexport (by used) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_0__node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_webcam_vue_vue_type_template_id_e0cd8258___["b"]; });
 
 
 /***/ }),
@@ -4997,7 +4981,7 @@ if (hadRuntime) {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return staticRenderFns; });
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}}),_vm._v(" "),_c('canvas',{ref:"canvas"})])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('video',{ref:"video",attrs:{"width":_vm.width,"height":_vm.height,"src":_vm.source,"autoplay":_vm.autoplay,"playsinline":_vm.playsinline}})])}
 var staticRenderFns = []
 
 
