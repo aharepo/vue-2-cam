@@ -1,6 +1,6 @@
 {
     "name": "vue-2-cam",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": "VueJS 2 Webcam component (fork from https://github.com/shaya72/vue-cam-vision) with get user media / google imagecapture / google vision api",
     "main": "dist/index.js",
     "author": {
