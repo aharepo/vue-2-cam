@@ -16,7 +16,7 @@
         "demo": "cross-env NODE_ENV=production webpack --progress --hide-modules --config demo/webpack.config.js"
     },
     "dependencies": {
-        "axios": "^0.18.0",
+        "axios": "^0.21.4",
         "vue": "^2.5.17"
     },
     "repository": {
